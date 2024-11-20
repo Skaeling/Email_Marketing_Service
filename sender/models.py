@@ -1,10 +1,14 @@
 from django.db import models
+from django.urls import reverse
 
 
 class Recipient(models.Model):
     email = models.CharField(max_length=50, unique=True, verbose_name='Электронная почта')
     fullname = models.CharField(max_length=100, verbose_name='ФИО')
     comment = models.TextField(null=True, blank=True, verbose_name='Комментарий')
+
+    def get_absolute_url(self):
+        return reverse("sender:recipients_list")
 
     def __str__(self):
         return f'{self.fullname}({self.email})'

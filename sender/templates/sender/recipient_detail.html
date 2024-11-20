@@ -1,0 +1,31 @@
+{% extends 'sender/base.html' %}
+{% block content%}
+<div class="coll-12 d-flex justify-content-center">
+
+    <table class="table-primary table-bordered">
+        <thead>
+        <tr class="table-primary text-center">
+            <th scope="col">#</th>
+            <th scope="col">Электронная почта</th>
+            <th scope="col">ФИО</th>
+            <th scope="col">&nbsp;Дополнительно&nbsp;</th>
+            <th scope="col">&nbsp;Действия&nbsp;</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="table-primary">
+            <th scope="row">&nbsp;{{ client.id }}&nbsp;</th>
+            <td class="table-primary">&nbsp;{{ client.email }}&nbsp;</td>
+            <td class="table-primary">&nbsp;{{ client.fullname }}&nbsp;</td>
+            <td class="table-primary">&nbsp;{{ client.comment }}&nbsp;</td>
+            <td class="table-primary">&nbsp;
+                <a href="{% url 'sender:update_recipient' client.pk %}" class="button btn btn-primary">Редактировать</a>
+                <a href="{% url 'sender:recipient_confirm_delete' client.pk %}" class="button btn btn-danger">Удалить</a>&nbsp;
+            </td>
+
+        </tr>
+    </table>
+</div>
+
+{% endblock %}
