@@ -8,7 +8,7 @@ class Recipient(models.Model):
     comment = models.TextField(null=True, blank=True, verbose_name='Комментарий')
 
     def get_absolute_url(self):
-        return reverse("sender:recipients_list")
+        return reverse("sender:recipient_detail", kwargs={'pk': self.pk})
 
     def __str__(self):
         return f'{self.fullname}({self.email})'
@@ -22,6 +22,9 @@ class Recipient(models.Model):
 class Message(models.Model):
     title = models.CharField(max_length=100, verbose_name='Заголовок')
     body = models.TextField(verbose_name='Сообщение')
+
+    def get_absolute_url(self):
+        return reverse("sender:message_detail", kwargs={'pk': self.pk})
 
     def __str__(self):
         return f'{self.title}: {self.body[:100]}'

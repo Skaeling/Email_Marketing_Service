@@ -9,7 +9,7 @@
             <th scope="col">Электронная почта</th>
             <th scope="col">ФИО</th>
             <th scope="col">&nbsp;Дополнительно&nbsp;</th>
-            <th scope="col">&nbsp;Действия&nbsp;</th>
+            <th scope="col">&nbsp;Опции&nbsp;</th>
 
         </tr>
         </thead>
@@ -20,12 +20,17 @@
             <td class="table-primary">&nbsp;{{ client.fullname }}&nbsp;</td>
             <td class="table-primary">&nbsp;{{ client.comment }}&nbsp;</td>
             <td class="table-primary">&nbsp;
-                <a href="{% url 'sender:update_recipient' client.pk %}" class="button btn btn-primary">Редактировать</a>
+                <a href="{% url 'sender:recipient_update' client.pk %}" class="button btn btn-primary">Редактировать</a>
                 <a href="{% url 'sender:recipient_confirm_delete' client.pk %}" class="button btn btn-danger">Удалить</a>&nbsp;
             </td>
 
         </tr>
     </table>
 </div>
+<div class="container mt-5 d-flex justify-content-center">
+                <a href="{% url 'sender:recipients_list' %}" class="button btn btn-primary">К списку получателей</a>
+                <a href="{% url 'sender:recipient_create' %}" class="button btn btn-primary">Добавить нового получателя</a>
+
+    </div>
 
 {% endblock %}

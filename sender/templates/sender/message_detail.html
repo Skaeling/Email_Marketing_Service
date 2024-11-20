@@ -1,0 +1,35 @@
+{% extends 'sender/base.html' %}
+{% block content%}
+<div class="coll-12 d-flex justify-content-center">
+
+    <table class="table-primary table-bordered">
+        <thead>
+        <tr class="table-primary text-center">
+            <th scope="col">#</th>
+            <th scope="col">Заголовок</th>
+            <th scope="col">Тело сообщения</th>
+            <th scope="col">&nbsp;Опции&nbsp;</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="table-primary">
+            <th scope="row">&nbsp;{{ message.id }}&nbsp;</th>
+            <td class="table-primary">&nbsp;{{ message.title }}&nbsp;</td>
+            <td class="table-primary">&nbsp;{{ message.body }}&nbsp;</td>
+            <td class="table-primary">&nbsp;
+                <a href="{% url 'sender:message_update' message.pk %}" class="button btn btn-primary">Редактировать</a>
+                <a href="{% url 'sender:message_confirm_delete' message.pk %}" class="button btn btn-danger">Удалить</a>&nbsp;
+            </td>
+
+        </tr>
+    </table>
+    </div>
+    <div class="container mt-5 d-flex justify-content-center">
+                <a href="{% url 'sender:messages_list' %}" class="button btn btn-primary">К списку сообщений</a>
+                <a href="{% url 'sender:message_create' %}" class="button btn btn-primary">Добавить новое сообщение</a>
+
+    </div>
+
+
+{% endblock %}

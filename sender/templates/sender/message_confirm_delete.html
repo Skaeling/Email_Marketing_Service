@@ -1,0 +1,15 @@
+{% extends 'sender/base.html' %}
+{% block content %}
+<div class="col-12">
+    <div class="row mt-5">
+            <div class="col-12 d-flex justify-content-around">
+                <h5>Вы действительно ходите удалить сообщение <strong>{{ message.title }}</strong>?</h5>
+                <form method="post">
+                    {% csrf_token %}
+                    <a href="{% url 'sender:messages_list' %}" class="btn btn-info">Отменить</a>
+                    <button type="submit" class="btn btn-warning">Подтвердить</button>
+                </form>
+            </div>
+    </div>
+</div>
+{% endblock %}
