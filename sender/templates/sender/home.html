@@ -1,10 +1,6 @@
 {% extends 'sender/base.html' %}
 {% block content%}
-<div class="row">
-    <div class="container d-flex justify-content-center">
-        <p>Добро пожаловать в настройки рассылки!</p>
-    </div>
-</div>
+{% include "sender/includes/inc_sender_header.html" with title=title header='Добро пожаловать в настройки рассылок'%}
 
 <div class="row">
     <div class="coll-12 mt-3 d-flex justify-content-center">
@@ -12,29 +8,61 @@
         <table class="table-primary table-bordered">
             <thead>
             <tr class="table-primary text-center">
-                <th scope="col">Общее количество рассылок</th>
-                <th scope="col">Количество активных рассылок</th>
-                <th scope="col">Количество уникальных получателей</th>
+                <th scope="col">&nbsp;Всего рассылок&nbsp;</th>
+                <th scope="col">&nbsp;Активно&nbsp;</th>
+                <th scope="col">&nbsp;Количество уникальных получателей&nbsp;</th>
             </tr>
             </thead>
             <tbody>
-            <tr class="table-primary">
-                <th scope="row">&nbsp;test&nbsp;</th>
-                <td class="table-primary">&nbsp;test&nbsp;</td>
-                <td class="table-primary">&nbsp;test&nbsp;</td>
+            <tr class="table-primary text-center">
+                <th scope="row">&nbsp;{{ all_mailings }}&nbsp;</th>
+                <td class="table-primary">&nbsp;{{ active_mail }}&nbsp;</td>
+                <td class="table-primary">&nbsp;{{ email.count }}&nbsp;</td>
 
             </tr>
         </table>
     </div>
-    <div class="row mt-3">
+    <div class="row mt-5">
         <div class="container d-flex justify-content-center">
-            <ul>
-                <li><a href="{% url 'sender:recipients_list' %}" class="button btn btn-primary">Управление клиентами</a>
-                </li>
-                <li><a href="{% url 'sender:messages_list' %}" class="button btn btn-primary">Управление сообщениями</a></li>
-                <li><a href="{% url 'sender:newsletters_list' %}" class="button btn btn-primary">Управление рассылками</a></li>
-                <li><a href="#" class="button btn btn-primary">Начать новую рассылку</a></li>
-            </ul>
+            <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                        Управление клиентами
+                    </button>
+                    <ul class="dropdown-menu bg-primary-subtle">
+                        <li><a class="dropdown-item" href="{% url 'sender:recipients_list' %}">Все получатели</a>
+                        </li>
+                        <li><a class="dropdown-item" href="{% url 'sender:recipient_create' %}">Создать нового
+                            получателя</a></li>
+                    </ul>
+                </div>
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                        Управление сообщениями
+                    </button>
+                    <ul class="dropdown-menu bg-primary-subtle">
+                        <li><a class="dropdown-item" href="{% url 'sender:messages_list' %}">Все сообщения</a></li>
+                        <li><a class="dropdown-item" href="{% url 'sender:message_create' %}">Создать новое сообщение</a></li>
+                    </ul>
+                </div>
+
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                        Управление рассылками
+                    </button>
+                    <ul class="dropdown-menu bg-primary-subtle">
+                        <li><a class="dropdown-item" href="{% url 'sender:newsletters_list' %}">Все рассылки</a></li>
+                        <li><a class="dropdown-item" href="{% url 'sender:newsletter_create' %}">Создать новую рассылку</a></li>
+                    </ul>
+                </div>
+
+                <div class="btn-group" role="group">
+                    <a href="#" class="btn btn-primary active" aria-current="page">Запустить новую рассылку</a>
+                </div>
+            </div>
         </div>
     </div>
 </div>

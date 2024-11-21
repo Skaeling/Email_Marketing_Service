@@ -6,7 +6,17 @@ from django.urls import reverse_lazy, reverse
 
 
 def home(request):
-    return render(request, 'sender/home.html')
+    clients = Recipient.objects.order_by('email').distinct('email')
+    all_mailings = Newsletter.objects.count()
+    active_mailings = Newsletter.objects.filter(status=Newsletter.STARTED)
+    result = active_mailings.count()
+    extra_context = {'title': 'Главная',
+                     'email': clients,
+                     'active_mail': result,
+                     'all_mailings': all_mailings
+
+                     }
+    return render(request, 'sender/home.html', extra_context)
 
 
 # CLIENT
