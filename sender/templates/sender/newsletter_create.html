@@ -1,0 +1,15 @@
+{% extends 'sender/base.html' %}
+{% block content%}
+<div class="row">
+    <div class="container d-flex justify-content-center">
+
+        <form method="post">
+            {% csrf_token %}
+            {{form.as_p}}
+            <a href="{% url 'sender:newsletters_list' %}" class="btn btn-info">Отменить</a>
+            <button type="submit" class="btn btn-info">Сохранить</button>
+        </form>
+
+    </div>
+</div>
+{% endblock %}

@@ -2,13 +2,14 @@ from django.shortcuts import render
 from django.views.generic.edit import UpdateView, CreateView, DeleteView
 from django.views.generic import ListView, DetailView
 from .models import Recipient, Message, Newsletter
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 
 
 def home(request):
     return render(request, 'sender/home.html')
 
 
+# CLIENT
 class RecipientListView(ListView):
     model = Recipient
     template_name = 'sender/recipients_list.html'
@@ -50,6 +51,7 @@ class RecipientDeleteView(DeleteView):
     success_url = reverse_lazy('sender:recipients_list')
 
 
+# MESSAGE
 class MessageListView(ListView):
     model = Message
     template_name = 'sender/messages_list.html'
@@ -89,3 +91,49 @@ class MessageDeleteView(DeleteView):
     context_object_name = 'message'
     extra_context = {'title': 'Удаление сообщения'}
     success_url = reverse_lazy('sender:messages_list')
+
+
+#  NEWSLETTER
+
+class NewsletterListView(ListView):
+    model = Newsletter
+    template_name = 'sender/newsletters_list.html'
+    context_object_name = 'newsletters'
+    extra_context = {'title': 'Список доступных рассылок'}
+
+
+class NewsletterCreateView(CreateView):
+    model = Newsletter
+    fields = ['status', 'message', 'recipients']
+    template_name = 'sender/newsletter_create.html'
+    context_object_name = 'newsletter'
+    extra_context = {'title': 'Создать рассылку'}
+
+    def get_success_url(self, **kwargs):
+        return reverse("sender:newsletter_detail", kwargs={'pk': self.object.pk})
+
+
+class NewsletterUpdateView(UpdateView):
+    model = Newsletter
+    fields = ['status', 'message', 'recipients']
+    template_name = 'sender/newsletter_create.html'
+    context_object_name = 'newsletter'
+    extra_context = {'title': 'Редактировать рассылку'}
+
+    def get_success_url(self, **kwargs):
+        return reverse("sender:newsletter_detail", kwargs={'pk': self.object.pk})
+
+
+class NewsletterDetailView(DetailView):
+    model = Newsletter
+    template_name = 'sender/newsletter_detail.html'
+    context_object_name = 'newsletter'
+    extra_context = {'title': 'Детальная информация о рассылке'}
+
+
+class NewsletterDeleteView(DeleteView):
+    model = Newsletter
+    template_name = 'sender/newsletter_confirm_delete.html'
+    context_object_name = 'newsletter'
+    extra_context = {'title': 'Удаление рассылку'}
+    success_url = reverse_lazy('sender:newsletters_list')

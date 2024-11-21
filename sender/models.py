@@ -3,7 +3,7 @@ from django.urls import reverse
 
 
 class Recipient(models.Model):
-    email = models.CharField(max_length=50, unique=True, verbose_name='Электронная почта')
+    email = models.EmailField(unique=True, verbose_name='Электронная почта')
     fullname = models.CharField(max_length=100, verbose_name='ФИО')
     comment = models.TextField(null=True, blank=True, verbose_name='Комментарий')
 
@@ -11,7 +11,7 @@ class Recipient(models.Model):
         return reverse("sender:recipient_detail", kwargs={'pk': self.pk})
 
     def __str__(self):
-        return f'{self.fullname}({self.email})'
+        return f'{self.fullname} ({self.email})'
 
     class Meta:
         verbose_name = 'получатель'
@@ -49,7 +49,7 @@ class Newsletter(models.Model):
     last_sent = models.DateTimeField(auto_now=True, verbose_name='Дата завершения')
     status = models.CharField(max_length=7, choices=NEWSLETTER_STATUS_CHOISES, default=CREATED, verbose_name='Статус')
     message = models.ForeignKey(Message, on_delete=models.CASCADE, related_name='newsletters')
-    recipients = models.ManyToManyField(Recipient, related_name='newsletters')
+    recipients = models.ManyToManyField(Recipient, related_name='newsletter_received')
 
     def __str__(self):
         return f'Отправлена:{self.first_sent} Статус:{self.status} ' \
