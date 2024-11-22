@@ -1,8 +1,12 @@
+import os
+
 from django.shortcuts import render
+from django.utils import timezone
 from django.views.generic.edit import UpdateView, CreateView, DeleteView
 from django.views.generic import ListView, DetailView
-from .models import Recipient, Message, Newsletter
+from .models import Recipient, Message, Newsletter, MailingAttempt
 from django.urls import reverse_lazy, reverse
+from django.core.mail import send_mail
 
 
 def home(request):
@@ -147,3 +151,43 @@ class NewsletterDeleteView(DeleteView):
     context_object_name = 'newsletter'
     extra_context = {'title': 'Удаление рассылку'}
     success_url = reverse_lazy('sender:newsletters_list')
+
+
+# class MailingAttemptCreateView(CreateView):
+#     model = MailingAttempt
+#     fields = ['attempt_date', 'exc_state', 'server_response', 'newsletter']
+#     template_name = 'sender/send_newsletter.html'
+#     context_object_name = 'newsletter'
+#     extra_context = {'title': 'Отправить рассылку'}
+
+# def get_success_url(self, **kwargs):
+#     return reverse("sender:newsletter_detail", kwargs={'pk': self.object.pk})
+
+
+def mail_send(request, pk):
+    mailing = Newsletter.objects.get(pk=pk)
+    email_list = list(mailing.recipients.values_list('email', flat=True))
+    sender = os.getenv('EMAIL_HOST_USER')
+    to = email_list
+    title = mailing.message.title
+    message = mailing.message.body
+    if send_mail(title, message, sender, [], fail_silently=False):
+        attempt = MailingAttempt.objects.create(attempt_date=timezone.now(), exc_state=MailingAttempt.SUCCESSFUL,
+                                                newsletter_id=pk)
+        attempt.save()
+        mailing.status = 'started'
+        mailing.save()
+        context = {
+            'title': 'Успешно',
+            'header': 'Рассылка отправлена'
+        }
+        return render(request, 'sender/send_newsletter.html', context)
+    else:
+        attempt = MailingAttempt.objects.create(attempt_date=timezone.now(), server_response='error', newsletter_id=pk)
+        attempt.save()
+        print("error")
+        context = {
+            'title': 'Ошибка!',
+            'header': 'Ознакомьтесь с логом ошибки'
+        }
+        return render(request, 'sender/send_newsletter.html', context)

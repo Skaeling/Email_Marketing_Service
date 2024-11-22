@@ -37,6 +37,7 @@
             <td class="table-primary">&nbsp;
                 <a href="{% url 'sender:newsletter_update' newsletter.pk %}" class="button btn btn-primary">Редактировать</a>
                 <a href="{% url 'sender:newsletter_confirm_delete' newsletter.pk %}" class="button btn btn-danger">Удалить</a>&nbsp;
+                <a href="{% url 'sender:send_newsletter' newsletter.pk %}" class="button btn btn-danger">Отправить рассылку</a>&nbsp;
             </td>
 
         </tr>

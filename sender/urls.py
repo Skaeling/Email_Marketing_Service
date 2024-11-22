@@ -25,4 +25,6 @@ urlpatterns = [
     path('newsletters/update/<int:pk>/', NewsletterUpdateView.as_view(), name='newsletter_update'),
     path('newsletters/detail/<int:pk>/', NewsletterDetailView.as_view(), name='newsletter_detail'),
     path('newsletters/delete/<int:pk>/', NewsletterDeleteView.as_view(), name='newsletter_confirm_delete'),
+
+    path('newsletters/detail/<int:pk>/send_newsletter/', views.mail_send, name='send_newsletter')
 ]
