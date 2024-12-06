@@ -7,6 +7,7 @@ from django.views.generic import ListView, DetailView
 from .models import Recipient, Message, Newsletter, MailingAttempt
 from django.urls import reverse_lazy, reverse
 from django.core.mail import send_mail
+from .forms import RecipientForm, MessageForm, NewsletterForm
 
 
 def home(request):
@@ -33,17 +34,15 @@ class RecipientListView(ListView):
 
 class RecipientCreateView(CreateView):
     model = Recipient
-    fields = ['email', 'fullname', 'comment']
-    template_name = 'sender/recipient_create.html'
-    context_object_name = 'client'
+    form_class = RecipientForm
+    template_name = 'sender/create_form.html'
     extra_context = {'title': 'Создать получателя'}
 
 
 class RecipientUpdateView(UpdateView):
     model = Recipient
-    fields = ['email', 'fullname', 'comment']
-    template_name = 'sender/recipient_create.html'
-    context_object_name = 'client'
+    form_class = RecipientForm
+    template_name = 'sender/create_form.html'
     extra_context = {'title': 'Редактировать получателя'}
 
     # def get_success_url(self, **kwargs):
@@ -59,8 +58,7 @@ class RecipientDetailView(DetailView):
 
 class RecipientDeleteView(DeleteView):
     model = Recipient
-    template_name = 'sender/recipient_confirm_delete.html'
-    context_object_name = 'client'
+    template_name = 'sender/confirm_delete_form.html'
     extra_context = {'title': 'Удаление получателя'}
     success_url = reverse_lazy('sender:recipients_list')
 
@@ -75,17 +73,15 @@ class MessageListView(ListView):
 
 class MessageCreateView(CreateView):
     model = Message
-    fields = ['title', 'body']
-    template_name = 'sender/message_create.html'
-    context_object_name = 'message'
+    form_class = MessageForm
+    template_name = 'sender/create_form.html'
     extra_context = {'title': 'Создать сообщение'}
 
 
 class MessageUpdateView(UpdateView):
     model = Message
-    fields = ['title', 'body']
-    template_name = 'sender/message_create.html'
-    context_object_name = 'message'
+    form_class = MessageForm
+    template_name = 'sender/create_form.html'
     extra_context = {'title': 'Редактировать сообщение'}
 
     # def get_success_url(self, **kwargs):
@@ -101,8 +97,7 @@ class MessageDetailView(DetailView):
 
 class MessageDeleteView(DeleteView):
     model = Message
-    template_name = 'sender/message_confirm_delete.html'
-    context_object_name = 'message'
+    template_name = 'sender/confirm_delete_form.html'
     extra_context = {'title': 'Удаление сообщения'}
     success_url = reverse_lazy('sender:messages_list')
 
@@ -112,15 +107,13 @@ class MessageDeleteView(DeleteView):
 class NewsletterListView(ListView):
     model = Newsletter
     template_name = 'sender/newsletters_list.html'
-    context_object_name = 'newsletters'
     extra_context = {'title': 'Список доступных рассылок'}
 
 
 class NewsletterCreateView(CreateView):
     model = Newsletter
-    fields = ['status', 'message', 'recipients']
-    template_name = 'sender/newsletter_create.html'
-    context_object_name = 'newsletter'
+    form_class = NewsletterForm
+    template_name = 'sender/create_form.html'
     extra_context = {'title': 'Создать рассылку'}
 
     def get_success_url(self, **kwargs):
@@ -129,9 +122,8 @@ class NewsletterCreateView(CreateView):
 
 class NewsletterUpdateView(UpdateView):
     model = Newsletter
-    fields = ['status', 'message', 'recipients']
-    template_name = 'sender/newsletter_create.html'
-    context_object_name = 'newsletter'
+    form_class = NewsletterForm
+    template_name = 'sender/create_form.html'
     extra_context = {'title': 'Редактировать рассылку'}
 
     def get_success_url(self, **kwargs):
@@ -147,9 +139,8 @@ class NewsletterDetailView(DetailView):
 
 class NewsletterDeleteView(DeleteView):
     model = Newsletter
-    template_name = 'sender/newsletter_confirm_delete.html'
-    context_object_name = 'newsletter'
-    extra_context = {'title': 'Удаление рассылку'}
+    template_name = 'sender/confirm_delete_form.html'
+    extra_context = {'title': 'Удаление рассылки'}
     success_url = reverse_lazy('sender:newsletters_list')
 
 
@@ -167,11 +158,14 @@ class NewsletterDeleteView(DeleteView):
 def mail_send(request, pk):
     mailing = Newsletter.objects.get(pk=pk)
     email_list = list(mailing.recipients.values_list('email', flat=True))
-    sender = os.getenv('EMAIL_HOST_USER')
-    to = email_list
+    sender = os.getenv('EMAIL_DEFAULT_USER')
+
+    # выключатель рассылки
+    to = []
+
     title = mailing.message.title
     message = mailing.message.body
-    if send_mail(title, message, sender, [], fail_silently=False):
+    if send_mail(title, message, sender, to, fail_silently=False):
         attempt = MailingAttempt.objects.create(attempt_date=timezone.now(), exc_state=MailingAttempt.SUCCESSFUL,
                                                 newsletter_id=pk)
         attempt.save()

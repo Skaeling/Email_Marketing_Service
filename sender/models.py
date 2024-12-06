@@ -52,8 +52,8 @@ class Newsletter(models.Model):
     recipients = models.ManyToManyField(Recipient, related_name='newsletter_received')
 
     def __str__(self):
-        return f'Отправлена:{self.first_sent} Статус:{self.status} ' \
-               f'Сообщение:{self.message} Получатели:({self.recipients})'
+        return f'Рассылка №{self.pk} Статус: "{self.status}" ' \
+               f'Сообщение: "{self.message}"'
 
     class Meta:
         verbose_name = 'рассылка'
