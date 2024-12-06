@@ -1,83 +1,100 @@
 <div class="bg-black">
-<nav class="navbar navbar-expand-lg bg-primary-subtle">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#">Send-Or-Treat</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="{% url 'sender:home' %}">Главная</a>
-        </li>
-<!--        <li class="nav-item">-->
-<!--          <a class="nav-link" href="#">Link</a>-->
-<!--        </li>-->
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Клиенты
-          </a>
-          <ul class="dropdown-menu bg-primary-subtle">
-            <li><a class="dropdown-item" href="{% url 'sender:recipients_list' %}">Все получатели</a></li>
-            <li><a class="dropdown-item" href="{% url 'sender:recipient_create' %}">Создать нового получателя</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#">Something else here</a></li>
-          </ul>
-        </li>
+    <nav class="navbar navbar-expand-lg bg-primary-subtle">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Send-Or-Treat</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="{% url 'sender:home' %}">Главная</a>
+                    </li>
 
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Сообщения
-          </a>
-          <ul class="dropdown-menu bg-primary-subtle">
-            <li><a class="dropdown-item" href="{% url 'sender:messages_list' %}">Все сообщения</a></li>
-            <li><a class="dropdown-item" href="{% url 'sender:message_create' %}">Создать новое сообщение</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#">Something else here</a></li>
-          </ul>
-        </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                           aria-expanded="false">
+                            Клиенты
+                        </a>
+                        <ul class="dropdown-menu bg-primary-subtle">
+                            <li><a class="dropdown-item" href="{% url 'sender:recipients_list' %}">Все получатели</a>
+                            </li>
+                            <li><a class="dropdown-item" href="{% url 'sender:recipient_create' %}">Создать нового
+                                получателя</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="#">Something else here</a></li>
+                        </ul>
+                    </li>
 
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Рассылки
-          </a>
-          <ul class="dropdown-menu bg-primary-subtle">
-            <li><a class="dropdown-item" href="{% url 'sender:newsletters_list' %}">Все рассылки</a></li>
-            <li><a class="dropdown-item" href="{% url 'sender:newsletter_create' %}">Создать новую рассылку</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#">Something else here</a></li>
-          </ul>
-        </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                           aria-expanded="false">
+                            Сообщения
+                        </a>
+                        <ul class="dropdown-menu bg-primary-subtle">
+                            <li><a class="dropdown-item" href="{% url 'sender:messages_list' %}">Все сообщения</a></li>
+                            <li><a class="dropdown-item" href="{% url 'sender:message_create' %}">Создать новое
+                                сообщение</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="#">Something else here</a></li>
+                        </ul>
+                    </li>
 
-        <li class="nav-item">
-          <a class="nav-link active text-primary" aria-current="page" href="#"><strong><u>Запустить рассылку</u></strong></a>
-        </li>
-        <li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                           aria-expanded="false">
+                            Рассылки
+                        </a>
+                        <ul class="dropdown-menu bg-primary-subtle">
+                            <li><a class="dropdown-item" href="{% url 'sender:newsletters_list' %}">Все рассылки</a>
+                            </li>
+                            <li><a class="dropdown-item" href="{% url 'sender:newsletter_create' %}">Создать новую
+                                рассылку</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="#">Something else here</a></li>
+                        </ul>
+                    </li>
 
-        </li>
+                    <li class="nav-item">
+                        <a class="nav-link active text-primary" aria-current="page" href="#"><strong><u>Запустить
+                            рассылку</u></strong></a>
+                    </li>
+                    <li>
 
-      </ul>
-      <button class="btn btn-outline-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
-  Личный кабинет
-</button>
-    </div>
-  </div>
-</nav>
-  </div>
+                    </li>
 
-
-<div class="offcanvas offcanvas-end bg-dark text-white" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
-  <div class="offcanvas-header bg-primary-subtle text-dark">
-    <h5 class="offcanvas-title" id="offcanvasExampleLabel">Авторизация</h5>
-    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-  </div>
-  <div class="offcanvas-body">
-    <div>
-      Войдите в личный кабинет для управления вашими рассылками.
-    </div>
-    <div class="list-group mt-2">
-  <a href="#" class="list-group-item list-group-item-action bg-primary-subtle">Вход</a>
-  <a href="#" class="list-group-item list-group-item-action bg-primary-subtle">Регистрация</a>
+                </ul>
+                <button class="btn btn-outline-primary" type="button" data-bs-toggle="offcanvas"
+                        data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
+                    Личный кабинет
+                </button>
+            </div>
+        </div>
+    </nav>
 </div>
-  </div>
+
+
+<div class="offcanvas offcanvas-end bg-dark text-white" tabindex="-1" id="offcanvasExample"
+     aria-labelledby="offcanvasExampleLabel">
+    <div class="offcanvas-header bg-primary-subtle text-dark">
+        <h5 class="offcanvas-title" id="offcanvasExampleLabel">Авторизация</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <div>
+            Войдите в личный кабинет для управления вашими рассылками.
+        </div>
+        <div class="list-group mt-2">
+            <a href="#" class="list-group-item list-group-item-action bg-primary-subtle">Вход</a>
+            <a href="#" class="list-group-item list-group-item-action bg-primary-subtle">Регистрация</a>
+        </div>
+    </div>
 </div>
