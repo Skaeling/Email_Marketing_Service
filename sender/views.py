@@ -14,7 +14,7 @@ def home(request):
     all_mailings = Newsletter.objects.count()
     active_mailings = Newsletter.objects.filter(status=Newsletter.STARTED)
     result = active_mailings.count()
-    extra_context = {'title': 'Главная',
+    extra_context = {'title': 'Send-or-Treat',
                      'email': clients,
                      'active_mail': result,
                      'all_mailings': all_mailings

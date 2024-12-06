@@ -1,15 +1,14 @@
 {% extends 'sender/base.html' %}
 {% block content%}
-{% include "sender/includes/inc_sender_header.html" with title=title header='Добро пожаловать в настройки рассылок'%}
+{% include "sender/includes/inc_sender_header.html" with title=title header='Добро пожаловать в сервис рассылок'%}
 
 <div class="row">
-    <div class="coll-12 mt-3 d-flex justify-content-center">
-
+    <div class="col-12 mt-3 d-flex justify-content-center">
         <table class="table-primary table-bordered">
             <thead>
             <tr class="table-primary text-center">
                 <th scope="col">&nbsp;Всего рассылок&nbsp;</th>
-                <th scope="col">&nbsp;Активно&nbsp;</th>
+                <th scope="col">&nbsp;Активных&nbsp;</th>
                 <th scope="col">&nbsp;Количество уникальных получателей&nbsp;</th>
             </tr>
             </thead>
@@ -22,48 +21,66 @@
             </tr>
         </table>
     </div>
-    <div class="row mt-5">
-        <div class="container d-flex justify-content-center">
-            <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-                <div class="btn-group" role="group">
-                    <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown"
-                            aria-expanded="false">
-                        Управление клиентами
+</div>
+<div class="row mt-5 d-flex justify-content-center">
+    <div class="col-6">
+        <div class="accordion" id="accordionPanelsStayOpenExample">
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true"
+                            aria-controls="panelsStayOpen-collapseOne">
+                        Справочная информация
                     </button>
-                    <ul class="dropdown-menu bg-primary-subtle">
-                        <li><a class="dropdown-item" href="{% url 'sender:recipients_list' %}">Все получатели</a>
-                        </li>
-                        <li><a class="dropdown-item" href="{% url 'sender:recipient_create' %}">Создать нового
-                            получателя</a></li>
-                    </ul>
+                </h2>
+                <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show">
+                    <div class="accordion-body">
+                        Для создания нового объекта выберите соответствующий раздел <strong>Меню</strong>
+                    </div>
                 </div>
-                <div class="btn-group" role="group">
-                    <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown"
-                            aria-expanded="false">
-                        Управление сообщениями
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false"
+                            aria-controls="panelsStayOpen-collapseTwo">
+                        Accordion Item #2
                     </button>
-                    <ul class="dropdown-menu bg-primary-subtle">
-                        <li><a class="dropdown-item" href="{% url 'sender:messages_list' %}">Все сообщения</a></li>
-                        <li><a class="dropdown-item" href="{% url 'sender:message_create' %}">Создать новое сообщение</a></li>
-                    </ul>
+                </h2>
+                <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse show">
+                    <div class="accordion-body">
+                        <strong>This is the second item's accordion body.</strong> It is hidden by default, until the
+                        collapse plugin adds the appropriate classes that we use to style each element. These classes
+                        control the overall appearance, as well as the showing and hiding via CSS transitions. You can
+                        modify any of this with custom CSS or overriding our default variables. It's also worth noting
+                        that just about any HTML can go within the <code>.accordion-body</code>, though the transition
+                        does limit overflow.
+                    </div>
                 </div>
-
-                <div class="btn-group" role="group">
-                    <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown"
-                            aria-expanded="false">
-                        Управление рассылками
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false"
+                            aria-controls="panelsStayOpen-collapseThree">
+                        Accordion Item #3
                     </button>
-                    <ul class="dropdown-menu bg-primary-subtle">
-                        <li><a class="dropdown-item" href="{% url 'sender:newsletters_list' %}">Все рассылки</a></li>
-                        <li><a class="dropdown-item" href="{% url 'sender:newsletter_create' %}">Создать новую рассылку</a></li>
-                    </ul>
-                </div>
-
-                <div class="btn-group" role="group">
-                    <a href="#" class="btn btn-primary active" aria-current="page">Запустить новую рассылку</a>
+                </h2>
+                <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse">
+                    <div class="accordion-body">
+                        <strong>This is the third item's accordion body.</strong> It is hidden by default, until the
+                        collapse plugin adds the appropriate classes that we use to style each element. These classes
+                        control the overall appearance, as well as the showing and hiding via CSS transitions. You can
+                        modify any of this with custom CSS or overriding our default variables. It's also worth noting
+                        that just about any HTML can go within the <code>.accordion-body</code>, though the transition
+                        does limit overflow.
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+
+
 {% endblock %}
