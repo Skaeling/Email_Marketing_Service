@@ -93,8 +93,12 @@
             Войдите в личный кабинет для управления вашими рассылками.
         </div>
         <div class="list-group mt-2">
-            <a href="#" class="list-group-item list-group-item-action bg-primary-subtle">Вход</a>
-            <a href="#" class="list-group-item list-group-item-action bg-primary-subtle">Регистрация</a>
+            {% if user.is_authenticated %}
+            <form method="post" action="{% url 'users:logout' %}">{% csrf_token %}<button type="submit" class="list-group-item list-group-item-action bg-primary-subtle">Выход</button></form>
+            {% else %}
+            <a href="{% url 'users:login' %}" class="list-group-item list-group-item-action bg-primary-subtle">Вход</a>
+            <a href="{% url 'users:register' %}" class="list-group-item list-group-item-action bg-primary-subtle">Регистрация</a>
+            {% endif %}
         </div>
     </div>
 </div>
