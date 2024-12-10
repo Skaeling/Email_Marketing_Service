@@ -46,7 +46,7 @@ class CustomLoginForm(AuthenticationForm):
             Fieldset('', *self.fields, css_class='form-control border-primary', style='font-size: 13px;'),
             Row(
                 Column(HTML('<a class="btn btn-primary form-group" href="javascript:history.back()">Назад</a>')),
-                Column(Submit('submit', 'Сохранить', css_class='btn btn-primary form-group')),
+                Column(Submit('submit', 'Войти', css_class='btn btn-primary form-group')),
                 css_class='col-12 mt-2 text-center'
             )
         )

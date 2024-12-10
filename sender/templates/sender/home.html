@@ -1,29 +1,32 @@
 {% extends 'sender/base.html' %}
 {% block content%}
-{% include "sender/includes/inc_sender_header.html" with title=title header='Добро пожаловать в сервис рассылок'%}
-
-<div class="row">
-    <div class="col-12 mt-3 d-flex justify-content-center">
-        <table class="table-primary table-bordered">
+{% include "sender/includes/inc_sender_header.html" with title=title header='Добро пожаловать в сервис рассылок!'%}
+<div class="row d-flex justify-content-center">
+<div class="col-6 ">
+<div class="container rounded bg-secondary" style="high:300vh">
+<div class="row d-flex justify-content-center">
+        <div class="col-10 mt-3">
+        <div class="container p-2 rounded bg-dark">
+        <table class="table table-border text-center mt-3">
             <thead>
-            <tr class="table-primary text-center">
-                <th scope="col">&nbsp;Всего рассылок&nbsp;</th>
-                <th scope="col">&nbsp;Активных&nbsp;</th>
-                <th scope="col">&nbsp;Количество уникальных получателей&nbsp;</th>
+            <tr class="table-secondary">
+                <th scope="col">Всего рассылок</th>
+                <th scope="col">Активных</th>
+                <th scope="col">Количество уникальных получателей</th>
             </tr>
             </thead>
-            <tbody>
-            <tr class="table-primary text-center">
-                <th scope="row">&nbsp;{{ all_mailings }}&nbsp;</th>
-                <td class="table-primary">&nbsp;{{ active_mail }}&nbsp;</td>
-                <td class="table-primary">&nbsp;{{ email.count }}&nbsp;</td>
-
+            <tbody class="table-group-divider">
+            <tr>
+                <th>{{ all_mailings }}</th>
+                <td>{{ active_mail }}</td>
+                <td>{{ email.count }}</td>
             </tr>
         </table>
     </div>
 </div>
+</div>
 <div class="row mt-5 d-flex justify-content-center">
-    <div class="col-6">
+    <div class="col-10">
         <div class="accordion" id="accordionPanelsStayOpenExample">
             <div class="accordion-item">
                 <h2 class="accordion-header">
@@ -35,7 +38,7 @@
                 </h2>
                 <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show">
                     <div class="accordion-body">
-                        Для создания нового объекта выберите соответствующий раздел <strong>Меню</strong>
+                        Для создания нового объекта пройдите авторизацию и выберите соответствующий раздел <strong>Меню</strong>
                     </div>
                 </div>
             </div>
@@ -80,7 +83,7 @@
         </div>
     </div>
 </div>
-
-
-
+</div>
+</div>
+</div>
 {% endblock %}

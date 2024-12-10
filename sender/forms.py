@@ -36,4 +36,7 @@ class MessageForm(CustomCreateForm):
 class NewsletterForm(CustomCreateForm):
     class Meta:
         model = Newsletter
-        exclude = ('first_sent', 'last_sent')
+        exclude = ('status', 'first_sent', 'last_sent')
+        labels = {'message': 'Рассылка',
+                  'recipients': 'Получатели',
+                  }

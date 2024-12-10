@@ -107,6 +107,7 @@ class MessageDeleteView(DeleteView):
 class NewsletterListView(ListView):
     model = Newsletter
     template_name = 'sender/newsletters_list.html'
+    context_object_name = 'newsletters'
     extra_context = {'title': 'Список доступных рассылок'}
 
 
@@ -169,8 +170,10 @@ def mail_send(request, pk):
         attempt = MailingAttempt.objects.create(attempt_date=timezone.now(), exc_state=MailingAttempt.SUCCESSFUL,
                                                 newsletter_id=pk)
         attempt.save()
-        mailing.status = 'started'
-        mailing.save()
+        if mailing.status == 'created':
+            mailing.status = 'started'
+            mailing.first_sent = timezone.now()
+            mailing.save()
         context = {
             'title': 'Успешно',
             'header': 'Рассылка отправлена'
