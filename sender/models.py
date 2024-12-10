@@ -45,8 +45,8 @@ class Newsletter(models.Model):
         (STARTED, 'Запущена'),
         (CLOSED, 'Завершена'),
     ]
-    first_sent = models.DateTimeField(auto_now=True, verbose_name='Дата старта')
-    last_sent = models.DateTimeField(auto_now=True, verbose_name='Дата завершения')
+    first_sent = models.DateTimeField(null=True, blank=True, verbose_name='Дата старта')
+    last_sent = models.DateTimeField(null=True, blank=True, verbose_name='Дата завершения')
     status = models.CharField(max_length=7, choices=NEWSLETTER_STATUS_CHOISES, default=CREATED, verbose_name='Статус')
     message = models.ForeignKey(Message, on_delete=models.CASCADE, related_name='newsletters')
     recipients = models.ManyToManyField(Recipient, related_name='newsletter_received')

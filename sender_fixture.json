@@ -1,0 +1,124 @@
+[
+  {
+    "model": "sender.recipient",
+    "pk": 1,
+    "fields": {
+      "email": "JhonDoe@mail.ru",
+      "fullname": "Jhon Doe Jerom",
+      "comment": "Engineer"
+    }
+  },
+  {
+    "model": "sender.recipient",
+    "pk": 2,
+    "fields": {
+      "email": "KateKuper@mail.com",
+      "fullname": "Kate Kuper",
+      "comment": "HR"
+    }
+  },
+  {
+    "model": "sender.recipient",
+    "pk": 3,
+    "fields": {
+      "email": "MarshallMathers@mail.com",
+      "fullname": "Marshall Matters",
+      "comment": "SlimS Company Ltd"
+    }
+  },
+  {
+    "model": "sender.recipient",
+    "pk": 8,
+    "fields": {
+      "email": "Wind@yandex.ru",
+      "fullname": "WV",
+      "comment": ""
+    }
+  },
+  {
+    "model": "sender.message",
+    "pk": 1,
+    "fields": {
+      "title": "FirstOne",
+      "body": "BuyBuyBuy"
+    }
+  },
+  {
+    "model": "sender.message",
+    "pk": 2,
+    "fields": {
+      "title": "SecondOne",
+      "body": "PresentPresentPresent"
+    }
+  },
+  {
+    "model": "sender.message",
+    "pk": 3,
+    "fields": {
+      "title": "ThirdOne",
+      "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque interdum lacinia bibendum. Fusce quis est nibh. Donec imperdiet volutpat orci, vitae euismod purus. Donec interdum diam non mi consequat, sit amet condimentum lacus eleifend. Nulla facilisi. Morbi congue mi tellus, sagittis tempor nibh dapibus ac. Mauris tempus accumsan risus, quis tempor mi dapibus et. Mauris porttitor elementum posuere. Curabitur euismod non libero et tempus. Sed interdum dui eu semper eleifend. Integer ut mauris lorem. Phasellus eget metus lacinia, volutpat velit eget, porttitor justo. Nullam nec libero et velit suscipit tempor. Integer condimentum eleifend euismod. Vestibulum eleifend elit a diam dictum aliquet."
+    }
+  },
+  {
+    "model": "sender.newsletter",
+    "pk": 4,
+    "fields": {
+      "first_sent": null,
+      "last_sent": null,
+      "status": "created",
+      "message": 3,
+      "recipients": [
+        1,
+        2
+      ]
+    }
+  },
+  {
+    "model": "sender.newsletter",
+    "pk": 8,
+    "fields": {
+      "first_sent": null,
+      "last_sent": null,
+      "status": "created",
+      "message": 1,
+      "recipients": [
+        1,
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "sender.newsletter",
+    "pk": 12,
+    "fields": {
+      "first_sent": "2024-12-07T00:58:08.283Z",
+      "last_sent": null,
+      "status": "started",
+      "message": 2,
+      "recipients": [
+        8
+      ]
+    }
+  },
+  {
+    "model": "sender.mailingattempt",
+    "pk": 19,
+    "fields": {
+      "attempt_date": "2024-12-07T00:54:20.175Z",
+      "exc_state": "error",
+      "server_response": "error",
+      "newsletter": 12
+    }
+  },
+  {
+    "model": "sender.mailingattempt",
+    "pk": 20,
+    "fields": {
+      "attempt_date": "2024-12-07T00:58:08.263Z",
+      "exc_state": "success",
+      "server_response": "",
+      "newsletter": 12
+    }
+  }
+]
