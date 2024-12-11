@@ -24,7 +24,7 @@ urlpatterns = [
     path('newsletters/delete/<int:pk>/', views.NewsletterDeleteView.as_view(), name='newsletter_confirm_delete'),
 
     path('mailing_attempts/create_new/', views.MailingAttemptCreateView.as_view(), name='send_mail'),
-    path('mailing_attempts/create_new/result/', views.MailingAttemptListView.as_view(), name='send_newsletter'),
+    path('mailing_attempts/create_new/result/', views.MailingAttemptListView.as_view(), name='mailing_attempts'),
 
     # path('newsletters/detail/<int:pk>/send_newsletter/', views.mail_send, name='send_newsletter')
 ]
