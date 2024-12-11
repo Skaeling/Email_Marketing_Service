@@ -1,11 +1,15 @@
 from django.db import models
 from django.urls import reverse
 
+from users.models import CustomUser
+
 
 class Recipient(models.Model):
     email = models.EmailField(unique=True, verbose_name='Электронная почта')
     fullname = models.CharField(max_length=100, verbose_name='ФИО')
     comment = models.TextField(null=True, blank=True, verbose_name='Комментарий')
+    creator = models.ForeignKey(CustomUser, null=True, blank=True, on_delete=models.CASCADE, related_name='recipients',
+                                verbose_name="Добавлен")
 
     def get_absolute_url(self):
         return reverse("sender:recipient_detail", kwargs={'pk': self.pk})
@@ -50,10 +54,11 @@ class Newsletter(models.Model):
     status = models.CharField(max_length=7, choices=NEWSLETTER_STATUS_CHOISES, default=CREATED, verbose_name='Статус')
     message = models.ForeignKey(Message, on_delete=models.CASCADE, related_name='newsletters')
     recipients = models.ManyToManyField(Recipient, related_name='newsletter_received')
+    owner = models.ForeignKey(CustomUser, null=True, blank=True, on_delete=models.CASCADE,
+                              related_name='newsletters', verbose_name="Владелец")
 
     def __str__(self):
-        return f'Рассылка №{self.pk} Статус: "{self.status}" ' \
-               f'Сообщение: "{self.message}"'
+        return f'Рассылка №{self.pk}'
 
     class Meta:
         verbose_name = 'рассылка'
@@ -68,16 +73,17 @@ class MailingAttempt(models.Model):
         (SUCCESSFUL, 'Успешно'),
         (UNSUCCESSFUL, 'Не успешно')
     ]
-    attempt_date = models.DateTimeField(verbose_name="Дата и время попытки")
-    exc_state = models.CharField(max_length=15, choices=ATTEMPT_STATUS_CHOICES, default=UNSUCCESSFUL, verbose_name='Статус отправки')
+    attempt_date = models.DateTimeField(auto_now_add=True, verbose_name="Дата и время попытки")
+    exc_state = models.CharField(max_length=15, choices=ATTEMPT_STATUS_CHOICES, default=UNSUCCESSFUL,
+                                 verbose_name='Статус отправки')
     server_response = models.TextField(blank=True, null=True, default="")
     newsletter = models.ForeignKey(Newsletter, on_delete=models.CASCADE, related_name='mailing_attempts')
 
     def __str__(self):
-        return f'{self.attempt_date} осуществлена попытка отправки рассылки {self.newsletter} ' \
-               f'с результатом:{self.exc_state} Лог операции:{self.server_response}'
+        return f'{self.attempt_date} осуществлена попытка отправки {self.newsletter} ' \
+               f'с результатом: "{self.exc_state}" Лог операции: "{self.server_response}"'
 
     class Meta:
         verbose_name = 'попытка'
         verbose_name_plural = 'попытки'
-        ordering = ["exc_state", ]
+        ordering = ["-id", ]

@@ -153,5 +153,5 @@ EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL')
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 AUTH_USER_MODEL = 'users.CustomUser'
-# LOGIN_URL = 'users:login'
+LOGIN_URL = 'users:login'
 LOGIN_REDIRECT_URL = 'sender:home'

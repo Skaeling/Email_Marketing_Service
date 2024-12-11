@@ -1,9 +1,8 @@
 {% extends 'sender/base.html' %}
+{% load crispy_forms_tags %}
 {% block content%}
-{% include "sender/includes/inc_sender_header.html" with title=title header=newsletter.message.title%}
-
-<div class="coll-12 d-flex justify-content-center">
-
+{% include "sender/includes/inc_sender_header.html" with title=title header=header%}
+<div class="col-6">
     <table class="table-primary table-bordered">
         <thead>
         <tr class="table-primary text-center">
@@ -13,11 +12,11 @@
             <th scope="col">&nbsp;Текущий статус&nbsp;</th>
             <th scope="col">&nbsp;Сообщение&nbsp;</th>
             <th scope="col">&nbsp;Получатели&nbsp;</th>
-            <th scope="col">&nbsp;Опции&nbsp;</th>
 
         </tr>
         </thead>
         <tbody>
+        {% for newsletter in newsletters %}
         <tr class="table-primary text-center">
             <th scope="row">&nbsp;{{ newsletter.id }}&nbsp;</th>
             <td class="table-primary">&nbsp;{{ newsletter.first_sent }}&nbsp;</td>
@@ -31,22 +30,18 @@
                     {% endfor %}
                 </ul>
                 &nbsp;</td>
-
+            {% endfor %}
+            </table>
 
 
             <td class="table-primary">&nbsp;
-                <a href="{% url 'sender:newsletter_update' newsletter.pk %}" class="btn btn-primary">Редактировать</a>
-                <a href="{% url 'sender:newsletter_confirm_delete' newsletter.pk %}" class="button btn btn-danger">Удалить</a>&nbsp;
             </td>
-
-        </tr>
-    </table>
+</div>
+<div class="row">
+    <div class="container d-flex justify-content-center">
+        {% crispy form %}
     </div>
-    <div class="container mt-5 text-center">
-                <a href="{% url 'sender:newsletters_list' %}" class="button btn btn-primary">К списку рассылок</a>
-                <a href="{% url 'sender:newsletter_create' %}" class="button btn btn-primary">Добавить новую рассылку</a>
-
-    </div>
-
+</div>
 
 {% endblock %}
+
