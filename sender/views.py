@@ -1,5 +1,6 @@
 import os
 
+from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
@@ -161,7 +162,7 @@ class NewsletterDeleteView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('sender:newsletters_list')
 
 
-class MailingAttemptCreateView(CreateView, ListView):
+class MailingAttemptCreateView(SuccessMessageMixin, CreateView, ListView):
     model = Newsletter
     form_class = MailingAttemptForm
     context_object_name = 'newsletters'
@@ -172,7 +173,7 @@ class MailingAttemptCreateView(CreateView, ListView):
                      }
 
     def get_success_url(self, **kwargs):
-        return reverse_lazy("sender:send_newsletter")
+        return reverse_lazy("sender:mailing_attempts")
 
     # def get_form_class(self):
     #     newsletter = self.get_object(queryset=None)
@@ -192,28 +193,31 @@ class MailingAttemptCreateView(CreateView, ListView):
                     newsletter.save()
                 attempt.save()
 
-                self.extra_context = {
-                    'title': 'Успешно',
-                    'header': 'Рассылка отправлена'
-                }
-                self.request.session['extra_context'] = self.extra_context
+                success_message = "Рассылка успешно отправлена"
+                # self.extra_context = {
+                #     'title': 'Успешно',
+                #     'header': 'Рассылка отправлена'
+                # }
+                # self.request.session['extra_context'] = self.extra_context
                 print(f'Попытка рассылки состоялась')
             else:
                 attempt.server_response = 'error'
                 attempt.save()
                 print("error")
-                self.extra_context = {
-                    'title': 'Ошибка!',
-                    'header': 'Ознакомьтесь с логом ошибки'
-                }
-                self.request.session['extra_context'] = self.extra_context
-        return HttpResponseRedirect(self.get_success_url())
+                success_message = "Ошибка при отправке рассылки"
+                # self.extra_context = {
+                #     'title': 'Ошибка!',
+                #     'header': 'Ознакомьтесь с логом ошибки'
+                # }
+                # self.request.session['extra_context'] = self.extra_context
+        # return HttpResponseRedirect(self.get_success_url())
+#     вариант с success message
+        return HttpResponseRedirect(reverse('sender:mailing_attempts') + f'?success_message={success_message}')
 
 
 def mail_attempt(newsletter):
     email_list = list(newsletter.recipients.values_list('email', flat=True))
     sender = os.getenv('EMAIL_DEFAULT_USER')
-
     to = []  # заменить [] на email_list для включения опции рассылки
 
     title = newsletter.message.title
@@ -225,9 +229,20 @@ class MailingAttemptListView(ListView):
     model = MailingAttempt
     template_name = 'sender/mailing_attempts.html'
     context_object_name = 'mailings'
+    extra_context = {'title': 'Мои рассылки',
+                     'header': 'Результаты отправки'
+                     }
 
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     extra_context = self.request.session.get('extra_context', {})
+    #     context.update(extra_context)
+    #     return context
+
+    #     вариант с success message
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        extra_context = self.request.session.get('extra_context', {})
-        context.update(extra_context)
+        success_message = self.request.GET.get('success_message')
+        if success_message:
+            context['success_message'] = success_message
         return context

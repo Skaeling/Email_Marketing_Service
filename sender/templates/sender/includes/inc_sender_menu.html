@@ -74,7 +74,11 @@
                 </ul>
                 <button class="btn btn-outline-primary" type="button" data-bs-toggle="offcanvas"
                         data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
+                    {% if user.is_authenticated %}
+                    Профиль
+                    {% else %}
                     Личный кабинет
+                    {% endif %}
                 </button>
             </div>
         </div>
@@ -82,19 +86,27 @@
 </div>
 
 
-<div class="offcanvas offcanvas-end bg-secondary text-white" tabindex="-1" id="offcanvasExample"
+<div class="offcanvas offcanvas-end bg-dark text-white" tabindex="-1" id="offcanvasExample"
      aria-labelledby="offcanvasExampleLabel">
     <div class="offcanvas-header bg-primary-subtle rounded text-dark">
-        <h5 class="offcanvas-title" id="offcanvasExampleLabel">Авторизация</h5>
+        <h5 class="offcanvas-title" id="offcanvasExampleLabel">{% if user.is_authenticated %}Вы зашли как "{{ user.username }}"{% else %}Требуется авторизация{% endif %}</h5>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body">
-        <div>
+        <div>{% if user.is_authenticated %}
+            {% else %}
             Войдите в личный кабинет для управления вашими рассылками.
+            {% endif %}
         </div>
-        <div class="list-group mt-2">
+        <div class="list-group rounded mt-2">
             {% if user.is_authenticated %}
-            <form method="post" action="{% url 'users:logout' %}">{% csrf_token %}<button type="submit" class="list-group-item list-group-item-action bg-primary-subtle">Выход</button></form>
+            <a href="#" class="list-group-item list-group-item-action bg-primary-subtle">Профиль</a>
+            <a href="#" class="list-group-item list-group-item-action bg-primary-subtle">Статистика</a>
+        </div>
+    </div>
+            <div class="offcanvas-body d-flex align-items-end justify-content-center">
+                <form method="post" action="{% url 'users:logout' %}">{% csrf_token %}<button type="submit" class="btn btn-lg btn-outline-danger">Выход</button></form>
+            </div>
             {% else %}
             <a href="{% url 'users:login' %}" class="list-group-item list-group-item-action bg-primary-subtle">Вход</a>
             <a href="{% url 'users:register' %}" class="list-group-item list-group-item-action bg-primary-subtle">Регистрация</a>
