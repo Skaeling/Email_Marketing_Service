@@ -2,13 +2,19 @@
 {% block content%}
 {% include "sender/includes/inc_sender_header.html" with title=title header='Добро пожаловать в сервис рассылок!'%}
 <div class="row d-flex justify-content-center">
+               {% for message in messages %}
+                <div class="alert alert-info alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
 <div class="col-6 ">
 <div class="container rounded bg-secondary" style="high:300vh">
 <div class="row d-flex justify-content-center">
         <div class="col-10 mt-3">
-        <div class="container p-2 rounded bg-dark">
-        <table class="table table-border text-center mt-3">
-            <thead>
+            <div class="container p-2 rounded bg-dark">
+            <table class="table table-border text-center mt-3">
+                <thead>
             <tr class="table-secondary">
                 <th scope="col">Всего рассылок</th>
                 <th scope="col">Активных</th>
@@ -21,9 +27,9 @@
                 <td>{{ active_mail }}</td>
                 <td>{{ email.count }}</td>
             </tr>
-        </table>
-    </div>
-</div>
+            </table>
+            </div>
+        </div>
 </div>
 <div class="row mt-5 d-flex justify-content-center">
     <div class="col-10">

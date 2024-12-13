@@ -4,7 +4,7 @@ from django.contrib.auth.models import AbstractUser
 
 class CustomUser(AbstractUser):
     email = models.EmailField(unique=True)
-    avatar = models.ImageField(upload_to='user_images/', blank=True, null=True,
+    avatar = models.ImageField(upload_to='user_images/', default='user_images/default_avatar.png', blank=True, null=True,
                                help_text='Изображение размером не более 5 мб')
     phone_number = models.CharField(max_length=15, blank=True, null=True, help_text='Введите только цифры')
     country = models.CharField(max_length=20, blank=True, null=True)
