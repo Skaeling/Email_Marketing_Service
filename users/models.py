@@ -14,3 +14,8 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.email
+
+    class Meta:
+        permissions = [
+            ('can_change_user', 'Can change user')
+        ]

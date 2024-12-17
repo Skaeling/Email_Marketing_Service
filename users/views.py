@@ -1,7 +1,10 @@
 from django.contrib.auth import login
 from django.contrib import messages
+from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
+from django.contrib.auth.models import Group
 from django.contrib.auth.views import PasswordResetView, PasswordContextMixin
 from django.contrib.messages.views import SuccessMessageMixin
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import redirect
 
 from .forms import CustomUserCreationForm, CustomUpdateForm
@@ -27,33 +30,60 @@ class RegisterView(CreateView):
         return super().form_valid(form)
 
 
-class CustomUserDetailView(DetailView):
+class CustomUserListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+    model = CustomUser
+    template_name = 'users/user_list.html'
+    context_object_name = 'users'
+    extra_context = {'title': 'Пользователи'}
+    permission_required = 'users.view_customuser'
+
+    # def get_queryset(self):
+    #     queryset = super().get_queryset()
+    #     group_name = 'Пользователи'
+    #     group = Group.objects.get(name=group_name)
+    #     users = queryset.filter(groups=group)
+    #     return users
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        users = queryset.filter(groups__id=1)
+        return users
+
+
+class CustomUserDetailView(PermissionRequiredMixin, DetailView):
     model = CustomUser
     template_name = 'users/user_detail.html'
     context_object_name = 'user'
     extra_context = {'title': 'Профиль пользователя'}
+    permission_required = 'users.view_customuser'
 
 
-class CustomUserUpdateView(SuccessMessageMixin, UpdateView):
+class CustomUserUpdateView(PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
     model = CustomUser
     form_class = CustomUpdateForm
     template_name = 'users/register.html'
     context_object_name = 'user'
     success_message = "Профиль успешно обновлен!"
     extra_context = {'title': 'Редактировать профиль'}
+    permission_required = 'users.change_customuser'
 
     def get_success_url(self, **kwargs):
         return reverse("users:user_detail", kwargs={'pk': self.object.pk})
+
+    def get_object(self, queryset=None):
+        user = super().get_object(queryset)
+        logged_user = self.request.user
+        if not logged_user.has_perm('users.can_change_user') and user != logged_user:
+            raise PermissionDenied
+        return user
 
 
 class ResetPasswordView(SuccessMessageMixin, PasswordResetView):
     template_name = 'users/password_reset.html'
     email_template_name = 'users/password_reset_email.html'
     subject_template_name = 'users/password_reset_subject.txt'
-    success_message = "We've emailed you instructions for setting your password, " \
-                      "if an account exists with the email you entered. You should receive them shortly." \
-                      " If you don't receive an email, " \
-                      "please make sure you've entered the address you registered with, and check your spam folder."
+    success_message = "На указанную вами почту направлена инструкция по сбросу пароля, " \
+                      " Если вы не получили письмо, проверьте папку спам."
     success_url = reverse_lazy('sender:home')
 
 

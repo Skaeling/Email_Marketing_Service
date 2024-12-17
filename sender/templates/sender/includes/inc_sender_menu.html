@@ -75,10 +75,13 @@
                     </li>
                     <li>
 
+
                     </li>
 
                 </ul>
                 <!--Кнопка ЛК-->
+                <a href="{% url 'users:user_list' %}" class="btn btn-outline-primary">
+                    Пользователи</a>
                 <button class="btn btn-outline-primary" type="button" data-bs-toggle="offcanvas"
                         data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
                     {% if user.is_authenticated %}

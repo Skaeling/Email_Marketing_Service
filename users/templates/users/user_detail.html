@@ -34,6 +34,7 @@
             <p class="card-text">Мой телефон: {% if user.phone_number %}{{ user.phone_number }}{% else %}Не указано{% endif %}</p>
             <p class="card-text">Страна проживания: {% if user.country %}{{ user.country }}{% else %}Не указано{% endif %}</p>
 
+
             <a href="{% url 'sender:home' %}" class="btn btn-outline-primary">На главную</a>
         </div>
     </div>

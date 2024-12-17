@@ -11,7 +11,7 @@ from .models import Recipient, Message, Newsletter, MailingAttempt
 from django.urls import reverse_lazy, reverse
 from django.core.mail import send_mail
 from .forms import RecipientForm, MessageForm, NewsletterForm, MailingAttemptForm
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 
 def home(request):
@@ -29,11 +29,18 @@ def home(request):
 
 
 # CLIENT
-class RecipientListView(ListView):
+class RecipientListView(LoginRequiredMixin, ListView):
     model = Recipient
     template_name = 'sender/recipients_list.html'
-    context_object_name = 'recipient'
+    context_object_name = 'recipients'
     extra_context = {'title': 'Список получателей'}
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        user = self.request.user
+        if user.has_perm('sender.can_view_recipients'):
+            return queryset
+        return queryset.filter(creator=user)
 
 
 class RecipientCreateView(LoginRequiredMixin, CreateView):
@@ -41,6 +48,8 @@ class RecipientCreateView(LoginRequiredMixin, CreateView):
     form_class = RecipientForm
     template_name = 'sender/create_form.html'
     extra_context = {'title': 'Создать получателя'}
+    # permission_required = 'sender.add_recipient'
+    # permission_denied_message = 'Недостаточно прав для действия'
 
     def form_valid(self, form):
         if form.is_valid():
@@ -51,14 +60,12 @@ class RecipientCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class RecipientUpdateView(LoginRequiredMixin, UpdateView):
+class RecipientUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = Recipient
     form_class = RecipientForm
     template_name = 'sender/create_form.html'
     extra_context = {'title': 'Редактировать получателя'}
-
-    # def get_success_url(self, **kwargs):
-    #     return reverse("blog:post_detail", kwargs={'pk': self.object.pk})
+    permission_required = 'sender.change_recipient'
 
 
 class RecipientDetailView(DetailView):
@@ -74,6 +81,13 @@ class RecipientDeleteView(LoginRequiredMixin, DeleteView):
     extra_context = {'title': 'Удаление получателя'}
     success_url = reverse_lazy('sender:recipients_list')
 
+    def get_object(self, queryset=None):
+        recipient = super().get_object(queryset)
+        user = self.request.user
+        if not user.has_perm('sender.can_delete_recipient') or user != recipient.creator:
+            raise PermissionDenied
+        return recipient
+
 
 # MESSAGE
 class MessageListView(ListView):
@@ -83,7 +97,7 @@ class MessageListView(ListView):
     extra_context = {'title': 'Список сообщений'}
 
 
-class MessageCreateView(CreateView):
+class MessageCreateView(LoginRequiredMixin, CreateView):
     model = Message
     form_class = MessageForm
     template_name = 'sender/create_form.html'
@@ -104,7 +118,7 @@ class MessageDetailView(DetailView):
     extra_context = {'title': 'Детальная информация о сообщении'}
 
 
-class MessageDeleteView(DeleteView):
+class MessageDeleteView(LoginRequiredMixin, DeleteView):
     model = Message
     template_name = 'sender/confirm_delete_form.html'
     extra_context = {'title': 'Удаление сообщения'}
@@ -113,18 +127,19 @@ class MessageDeleteView(DeleteView):
 
 #  NEWSLETTER
 
-class NewsletterListView(ListView):
+class NewsletterListView(LoginRequiredMixin, ListView):
     model = Newsletter
     template_name = 'sender/newsletters_list.html'
     context_object_name = 'newsletters'
     extra_context = {'title': 'Список доступных рассылок'}
 
 
-class NewsletterCreateView(CreateView):
+class NewsletterCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = Newsletter
     form_class = NewsletterForm
     template_name = 'sender/create_form.html'
     extra_context = {'title': 'Создать рассылку'}
+    permission_required = 'sender.add_newsletter'
 
     def get_success_url(self, **kwargs):
         return reverse("sender:newsletter_detail", kwargs={'pk': self.object.pk})
@@ -194,24 +209,12 @@ class MailingAttemptCreateView(SuccessMessageMixin, CreateView, ListView):
                 attempt.save()
 
                 success_message = "Рассылка успешно отправлена"
-                # self.extra_context = {
-                #     'title': 'Успешно',
-                #     'header': 'Рассылка отправлена'
-                # }
-                # self.request.session['extra_context'] = self.extra_context
                 print(f'Попытка рассылки состоялась')
             else:
                 attempt.server_response = 'error'
                 attempt.save()
                 print("error")
                 success_message = "Ошибка при отправке рассылки"
-                # self.extra_context = {
-                #     'title': 'Ошибка!',
-                #     'header': 'Ознакомьтесь с логом ошибки'
-                # }
-                # self.request.session['extra_context'] = self.extra_context
-        # return HttpResponseRedirect(self.get_success_url())
-#     вариант с success message
         return HttpResponseRedirect(reverse('sender:mailing_attempts') + f'?success_message={success_message}')
 
 
@@ -233,13 +236,6 @@ class MailingAttemptListView(ListView):
                      'header': 'Результаты отправки'
                      }
 
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     extra_context = self.request.session.get('extra_context', {})
-    #     context.update(extra_context)
-    #     return context
-
-    #     вариант с success message
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         success_message = self.request.GET.get('success_message')
