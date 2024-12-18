@@ -9,7 +9,7 @@ class Recipient(models.Model):
     fullname = models.CharField(max_length=100, verbose_name='ФИО')
     comment = models.TextField(null=True, blank=True, verbose_name='Комментарий')
     creator = models.ForeignKey(CustomUser, null=True, blank=True, on_delete=models.SET_NULL, related_name='recipients',
-                                verbose_name="Добавлен")
+                                verbose_name="Кем добавлен")
 
     def get_absolute_url(self):
         return reverse("sender:recipient_detail", kwargs={'pk': self.pk})
@@ -22,8 +22,7 @@ class Recipient(models.Model):
         verbose_name_plural = 'получатели'
         ordering = ["email", ]
         permissions = [
-            ('can_delete_recipient', 'Can delete recipient'),
-            ('can_view_recipients', 'Can view recipients'),
+            ('can_view_all_clients', 'Can view all clients'),
 
         ]
 
@@ -31,6 +30,8 @@ class Recipient(models.Model):
 class Message(models.Model):
     title = models.CharField(max_length=100, verbose_name='Заголовок')
     body = models.TextField(verbose_name='Сообщение')
+    author = models.ForeignKey(CustomUser, null=True, blank=True, on_delete=models.SET_NULL, related_name='messages',
+                               verbose_name="Автор")
 
     def get_absolute_url(self):
         return reverse("sender:message_detail", kwargs={'pk': self.pk})
@@ -42,6 +43,10 @@ class Message(models.Model):
         verbose_name = 'сообщение'
         verbose_name_plural = 'сообщения'
         ordering = ["title", ]
+        permissions = [
+            ('can_view_all_messages', 'Can view all messages'),
+
+        ]
 
 
 class Newsletter(models.Model):
@@ -69,6 +74,11 @@ class Newsletter(models.Model):
         verbose_name = 'рассылка'
         verbose_name_plural = 'рассылки'
         ordering = ["first_sent", ]
+        permissions = [
+            ('can_view_all_newsletters', 'Can view all newsletters'),
+            ('can_change_newsletter_status', 'Can change newsletter status'),
+
+        ]
 
 
 class MailingAttempt(models.Model):

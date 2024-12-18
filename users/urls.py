@@ -1,17 +1,16 @@
 from django.urls import path
 
 from .forms import CustomLoginForm
-from .views import RegisterView, CustomUserDetailView, CustomUserUpdateView, ResetPasswordView, CustomUserListView
-from django.contrib.auth.views import LoginView, LogoutView, PasswordResetConfirmView, PasswordResetCompleteView
+from .views import RegisterView, CustomLoginView, CustomUserDetailView, CustomUserUpdateView, ResetPasswordView, CustomUserListView
+from django.contrib.auth.views import LogoutView, PasswordResetConfirmView, PasswordResetCompleteView
 
 app_name = 'users'
 
 urlpatterns = [
     path('users/', RegisterView.as_view(), name='register'),
-    path('login/', LoginView.as_view(template_name='users/login.html', authentication_form=CustomLoginForm,
-                                     extra_context={'title': 'Авторизация'}), name='login'),
+    path('login/', CustomLoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(next_page='sender:home'), name='logout'),
-    path('profile_list/', CustomUserListView.as_view(), name='user_list'),
+    path('profiles_list/', CustomUserListView.as_view(), name='user_list'),
     path('profile/<int:pk>/', CustomUserDetailView.as_view(), name='user_detail'),
     path('profile/update/<int:pk>/', CustomUserUpdateView.as_view(), name='user_update'),
     path('password_reset/', ResetPasswordView.as_view(), name='password_reset'),

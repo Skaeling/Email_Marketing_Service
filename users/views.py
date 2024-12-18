@@ -1,13 +1,13 @@
 from django.contrib.auth import login
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
-from django.contrib.auth.models import Group
-from django.contrib.auth.views import PasswordResetView, PasswordContextMixin
+from django.contrib.auth.views import PasswordResetView, LoginView, PasswordContextMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import PermissionDenied
-from django.shortcuts import redirect
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
 
-from .forms import CustomUserCreationForm, CustomUpdateForm
+from .forms import CustomUserCreationForm, CustomUpdateForm, ModeratorUpdateForm, CustomLoginForm
 from django.views.generic.edit import UpdateView, CreateView, DeleteView, FormView
 from django.views.generic import ListView, DetailView
 from django.urls import reverse_lazy, reverse
@@ -30,6 +30,27 @@ class RegisterView(CreateView):
         return super().form_valid(form)
 
 
+class CustomLoginView(SuccessMessageMixin, LoginView):
+    template_name = 'users/login.html'
+    authentication_form = CustomLoginForm
+    extra_context = {'title': 'Авторизация'}
+    success_message = 'Вы успешно вошли в систему!'
+
+    def form_invalid(self, form):
+        email = form.cleaned_data.get('username')
+        user = get_object_or_404(CustomUser, email=email)
+
+        if not user.is_active:
+            form.add_error(None, 'Ваш аккаунт неактивен. Пожалуйста, свяжитесь с администратором.')
+        # elif not user:
+        #     form.add_error(None, 'Пользователь с таким email не найден.')
+        # else:
+        #     form.add_error(None,
+        #                    'Пожалуйста, введите правильные email и пароль. '
+        #                    'Оба поля могут быть чувствительны к регистру.')
+        return self.render_to_response(self.get_context_data(form=form))
+
+
 class CustomUserListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = CustomUser
     template_name = 'users/user_list.html'
@@ -37,45 +58,47 @@ class CustomUserListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     extra_context = {'title': 'Пользователи'}
     permission_required = 'users.view_customuser'
 
-    # def get_queryset(self):
-    #     queryset = super().get_queryset()
-    #     group_name = 'Пользователи'
-    #     group = Group.objects.get(name=group_name)
-    #     users = queryset.filter(groups=group)
-    #     return users
-
     def get_queryset(self):
         queryset = super().get_queryset()
-        users = queryset.filter(groups__id=1)
+        users = queryset.exclude(username='admin').exclude(groups__name='Менеджеры')
         return users
 
 
-class CustomUserDetailView(PermissionRequiredMixin, DetailView):
+class CustomUserDetailView(LoginRequiredMixin, DetailView):
     model = CustomUser
     template_name = 'users/user_detail.html'
     context_object_name = 'user'
     extra_context = {'title': 'Профиль пользователя'}
-    permission_required = 'users.view_customuser'
-
-
-class CustomUserUpdateView(PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
-    model = CustomUser
-    form_class = CustomUpdateForm
-    template_name = 'users/register.html'
-    context_object_name = 'user'
-    success_message = "Профиль успешно обновлен!"
-    extra_context = {'title': 'Редактировать профиль'}
-    permission_required = 'users.change_customuser'
-
-    def get_success_url(self, **kwargs):
-        return reverse("users:user_detail", kwargs={'pk': self.object.pk})
 
     def get_object(self, queryset=None):
         user = super().get_object(queryset)
         logged_user = self.request.user
-        if not logged_user.has_perm('users.can_change_user') and user != logged_user:
+        if user == logged_user or logged_user.has_perm('users.can_view_all_users'):
+            return user
+        raise PermissionDenied
+
+
+class CustomUserUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    model = CustomUser
+    template_name = 'users/register.html'
+    context_object_name = 'user'
+    success_message = "Обновления сохранены"
+    extra_context = {'title': 'Редактировать профиль'}
+
+    def get_form_class(self):
+        user = self.get_object(queryset=None)
+        logged_user = self.request.user
+        if user == logged_user:
+            return CustomUpdateForm
+        elif logged_user.has_perm('users.can_block_user'):
+            return ModeratorUpdateForm
+        else:
             raise PermissionDenied
-        return user
+
+    def get_success_url(self, **kwargs):
+        if self.get_form_class() == ModeratorUpdateForm:
+            return reverse('users:user_list')
+        return reverse("users:user_detail", kwargs={'pk': self.object.pk})
 
 
 class ResetPasswordView(SuccessMessageMixin, PasswordResetView):
@@ -85,7 +108,6 @@ class ResetPasswordView(SuccessMessageMixin, PasswordResetView):
     success_message = "На указанную вами почту направлена инструкция по сбросу пароля, " \
                       " Если вы не получили письмо, проверьте папку спам."
     success_url = reverse_lazy('sender:home')
-
 
 # class PasswordResetView(PasswordContextMixin, FormView):
 #     """

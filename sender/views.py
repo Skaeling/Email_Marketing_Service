@@ -38,7 +38,7 @@ class RecipientListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         queryset = super().get_queryset()
         user = self.request.user
-        if user.has_perm('sender.can_view_recipients'):
+        if user.has_perm('sender.can_view_all_clients'):
             return queryset
         return queryset.filter(creator=user)
 
@@ -48,8 +48,6 @@ class RecipientCreateView(LoginRequiredMixin, CreateView):
     form_class = RecipientForm
     template_name = 'sender/create_form.html'
     extra_context = {'title': 'Создать получателя'}
-    # permission_required = 'sender.add_recipient'
-    # permission_denied_message = 'Недостаточно прав для действия'
 
     def form_valid(self, form):
         if form.is_valid():
@@ -60,15 +58,21 @@ class RecipientCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class RecipientUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+class RecipientUpdateView(LoginRequiredMixin, UpdateView):
     model = Recipient
     form_class = RecipientForm
     template_name = 'sender/create_form.html'
     extra_context = {'title': 'Редактировать получателя'}
-    permission_required = 'sender.change_recipient'
+
+    def get_object(self, queryset=None):
+        recipient = super().get_object(queryset)
+        user = self.request.user
+        if user.is_staff or user == recipient.creator:
+            return recipient
+        raise PermissionDenied
 
 
-class RecipientDetailView(DetailView):
+class RecipientDetailView(LoginRequiredMixin, DetailView):
     model = Recipient
     template_name = 'sender/recipient_detail.html'
     context_object_name = 'client'
@@ -84,9 +88,9 @@ class RecipientDeleteView(LoginRequiredMixin, DeleteView):
     def get_object(self, queryset=None):
         recipient = super().get_object(queryset)
         user = self.request.user
-        if not user.has_perm('sender.can_delete_recipient') or user != recipient.creator:
-            raise PermissionDenied
-        return recipient
+        if user.is_staff or user == recipient.creator:
+            return recipient
+        raise PermissionDenied
 
 
 # MESSAGE

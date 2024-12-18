@@ -65,3 +65,25 @@ class CustomUpdateForm(CustomUserCreationForm, UserChangeForm):
             'country': 'Страна проживания',
             'avatar': 'Аватар'
         }
+
+
+class ModeratorUpdateForm(UserChangeForm):
+    password = None
+
+    class Meta:
+        model = CustomUser
+        fields = ('is_active',
+                  )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
+        self.helper.layout = Layout(
+            Fieldset('', *self.fields, css_class='form-control border-primary', style='font-size: 13px;'),
+            Row(
+                Column(HTML('<a class="btn btn-outline-primary form-group" href="javascript:history.back()">Назад</a>')),
+                Column(Submit('submit', 'Сохранить', css_class='btn btn-primary form-group')),
+                css_class='col-12 mt-2 text-center'
+            )
+        )

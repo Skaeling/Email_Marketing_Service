@@ -17,5 +17,6 @@ class CustomUser(AbstractUser):
 
     class Meta:
         permissions = [
-            ('can_change_user', 'Can change user')
+            ('can_view_all_users', 'Can view all users'),
+            ('can_block_user', 'Can block user')
         ]
