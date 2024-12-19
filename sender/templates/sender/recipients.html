@@ -5,7 +5,7 @@
     <div class="col-10 mt-3">
         <div class="container p-5 mt-2 rounded bg-primary-subtle">
             {% if recipients %}
-                {% include "sender/includes/table.html" with headers=headers items=recipients actions=actions %}
+                {% include "sender/includes/table.html" with headers=headers items=recipients %}
             {% else %}
                 <h4 class="text-center">У вас пока нет ни одного клиента</h4>
             {% endif %}

@@ -4,7 +4,7 @@
 <div class="row d-flex justify-content-center">
     <div class="col-10 mt-3">
         <div class="container p-5 mt-2 rounded bg-primary-subtle">
-            {% if messages %}
+            {% if messages_list %}
                 {% include "sender/includes/table.html" with headers=headers items=messages actions=actions %}
             {% else %}
                 <h4 class="text-center">У вас пока нет ни одного сообщения</h4>

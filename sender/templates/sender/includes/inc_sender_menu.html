@@ -80,7 +80,8 @@
 
                 </ul>
                 <!--Кнопки ЛК-->
-                {% if perms.users.can_change_user %}
+                {% if perms.users.can_view_all_users %}
+                <div class="container-xs text-center">
                 <a href="{% url 'users:user_list' %}" class="btn btn-outline-primary">
                     Пользователи</a>
                 {% endif %}
@@ -92,6 +93,7 @@
                     Личный кабинет
                     {% endif %}
                 </button>
+                </div>
             </div>
         </div>
     </nav>

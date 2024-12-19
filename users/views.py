@@ -4,7 +4,6 @@ from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMix
 from django.contrib.auth.views import PasswordResetView, LoginView, PasswordContextMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import PermissionDenied
-from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 
 from .forms import CustomUserCreationForm, CustomUpdateForm, ModeratorUpdateForm, CustomLoginForm
@@ -56,7 +55,7 @@ class CustomUserListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     template_name = 'users/user_list.html'
     context_object_name = 'users'
     extra_context = {'title': 'Пользователи'}
-    permission_required = 'users.view_customuser'
+    permission_required = 'users.can_view_all_users'
 
     def get_queryset(self):
         queryset = super().get_queryset()

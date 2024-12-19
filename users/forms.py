@@ -1,11 +1,27 @@
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, Submit, Row, Column, HTML
-from django import forms
 from .models import CustomUser
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, UserChangeForm
 
 
-class CustomUserCreationForm(UserCreationForm):
+class StyleFormMixin:
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
+        self.helper.layout = Layout(
+            Fieldset('', *self.fields, css_class='form-control border-primary', style='font-size: 13px;'),
+            Row(
+                Column(HTML('<a class="btn btn-lg btn-outline-primary form-group" href="javascript:history.back()">Назад</a>')),
+                Column(Submit('submit', '{% if object %}Сохранить{% else %}ОК{% endif %}', css_class='btn btn-lg btn-primary form-group')),
+                css_class='col-12 mt-2 text-center'
+            )
+        )
+
+
+class CustomUserCreationForm(StyleFormMixin, UserCreationForm):
     usable_password = None
 
     class Meta:
@@ -23,38 +39,15 @@ class CustomUserCreationForm(UserCreationForm):
         super().__init__(*args, **kwargs)
         self.fields['password1'].help_text = ''
         self.fields['password2'].help_text = 'Введите пароль еще раз для подтверждения.'
-        self.helper = FormHelper()
-        self.helper.form_method = 'post'
-        self.helper.layout = Layout(
-            Fieldset('', *self.fields, css_class='form-control border-primary', style='font-size: 13px;'),
-            Row(
-                Column(HTML('<a class="btn btn-lg btn-outline-primary form-group" href="javascript:history.back()">Назад</a>')),
-                Column(Submit('submit', 'Сохранить', css_class='btn btn-lg btn-primary form-group')),
-                css_class='col-12 mt-2 text-center'
-            )
-        )
 
 
-class CustomLoginForm(AuthenticationForm):
+class CustomLoginForm(StyleFormMixin, AuthenticationForm):
     class Meta:
         model = CustomUser
         fields = ('email', 'password')
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.form_method = 'post'
-        self.helper.layout = Layout(
-            Fieldset('', *self.fields, css_class='form-control border-primary', style='font-size: 13px;'),
-            Row(
-                Column(HTML('<a class="btn btn-outline-primary form-group" href="javascript:history.back()">Назад</a>')),
-                Column(Submit('submit', 'Войти', css_class='btn btn-primary form-group')),
-                css_class='col-12 mt-2 text-center'
-            )
-        )
 
-
-class CustomUpdateForm(CustomUserCreationForm, UserChangeForm):
+class CustomUpdateForm(StyleFormMixin, UserChangeForm):
     password = None
 
     class Meta:
@@ -67,23 +60,10 @@ class CustomUpdateForm(CustomUserCreationForm, UserChangeForm):
         }
 
 
-class ModeratorUpdateForm(UserChangeForm):
+class ModeratorUpdateForm(StyleFormMixin, UserChangeForm):
     password = None
 
     class Meta:
         model = CustomUser
         fields = ('is_active',
                   )
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.form_method = 'post'
-        self.helper.layout = Layout(
-            Fieldset('', *self.fields, css_class='form-control border-primary', style='font-size: 13px;'),
-            Row(
-                Column(HTML('<a class="btn btn-outline-primary form-group" href="javascript:history.back()">Назад</a>')),
-                Column(Submit('submit', 'Сохранить', css_class='btn btn-primary form-group')),
-                css_class='col-12 mt-2 text-center'
-            )
-        )

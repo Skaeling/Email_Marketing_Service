@@ -13,9 +13,10 @@ class CustomCreateForm(forms.ModelForm):
         self.helper.layout = Layout(
             Fieldset('', *self.fields, css_class='form-control border-primary', style='font-size: 13px;'),
             Row(
-                Column(HTML('<a class="btn btn-lg btn-outline-primary form-group" href="javascript:history.back()">Назад</a>')),
-                Column(Submit('submit', '{% if object %}Сохранить{% else %}Создать{% endif %}',
-                              css_class='btn btn-lg btn-outline-primary form-group')), css_class='col-12 mt-2 text-center'
+                Column(HTML(
+                    '<a class="btn btn-lg btn-outline-primary form-group" href="javascript:history.back()">Назад</a>')),
+                Column(Submit('submit', '{% if object %}Сохранить{% else %}Создать{% endif %}', css_class='btn btn-lg btn-primary form-group')),
+                css_class='col-12 mt-2 text-center'
             )
         )
 
@@ -39,6 +40,12 @@ class NewsletterForm(CustomCreateForm):
         labels = {'message': 'Рассылка',
                   'recipients': 'Получатели',
                   }
+
+
+class ModeratorNewsletterForm(CustomCreateForm):
+    class Meta:
+        model = Newsletter
+        fields = ('status',)
 
 
 class MailingAttemptForm(CustomCreateForm):
