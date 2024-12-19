@@ -4,16 +4,35 @@
 {% include "sender/includes/inc_sender_header.html" with title=title header=header%}
 
 {% if success_message %}
-<div class="alert alert-{% if success_message|slice:1 == 'Р'%}success{% else %}danger{% endif %}">
+<div class="alert alert-{% if success_message|slice:1 == 'Р'%}success{% else %}danger{% endif %} alert-dismissible fade show"
+     role="alert">
     {{ success_message }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+
 </div>
 {% endif %}
-{% for mailing in mailings %}
-<ul class="list-group list-group-item-primary">
-    <li class="{% if mailing == mailings|first %}list-group-item text-bg-primary text-wrap{% else %}list-group-item{% endif %}">
-        {{ mailing.attempt_date|date:'d-m-Y H:i' }} {{ mailing.newsletter }} {{ mailing.exc_state }} Лог операции: {{ mailing.server_response }}
-    </li>
-</ul>
-{% endfor %}
+<div class="row bg-secondary text-white text-center rounded pd-3">
+    <h4>
+        Итоги
+    </h4>
+</div>
+<div class="container-fluid bg-dark rounded pd-5">
+    {% for mailing in mailings %}
 
+    <ul class="list-group">
+        <li class="{% if forloop.first %}list-group-item text-bg-primary text-wrap{% else %}list-group-item{% endif %}">
+            {{ mailing.attempt_date|date:'d-m-Y H:i' }} {{ mailing.newsletter }} {{ mailing.exc_state }} Лог операции:
+            {{ mailing.server_response }}
+        </li>
+    </ul>
+
+    {% endfor %}
+</div>
 {% endblock %}
+
+{% for message in messages %}
+<div class="alert alert-info alert-dismissible fade show" role="alert">
+    {{ message }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endfor %}

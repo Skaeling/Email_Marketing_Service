@@ -16,6 +16,7 @@ class CustomUser(AbstractUser):
         return self.email
 
     class Meta:
+        ordering = ['email', ]
         permissions = [
             ('can_view_all_users', 'Can view all users'),
             ('can_block_user', 'Can block user')

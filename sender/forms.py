@@ -29,7 +29,7 @@ class RecipientForm(CustomCreateForm):
 class MessageForm(CustomCreateForm):
     class Meta:
         model = Message
-        fields = '__all__'
+        exclude = ('author',)
 
 
 class NewsletterForm(CustomCreateForm):

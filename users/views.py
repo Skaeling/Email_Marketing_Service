@@ -64,7 +64,7 @@ class CustomUserListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
         return users
 
 
-class CustomUserDetailView(LoginRequiredMixin, DetailView):
+class CustomUserDetailView(DetailView):
     model = CustomUser
     template_name = 'users/user_detail.html'
     context_object_name = 'user'
@@ -78,7 +78,7 @@ class CustomUserDetailView(LoginRequiredMixin, DetailView):
         raise PermissionDenied
 
 
-class CustomUserUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+class CustomUserUpdateView(SuccessMessageMixin, UpdateView):
     model = CustomUser
     template_name = 'users/register.html'
     context_object_name = 'user'

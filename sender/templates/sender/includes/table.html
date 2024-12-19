@@ -1,0 +1,77 @@
+<table class="table table-border text-center">
+    <thead>
+    <tr class="table-secondary">
+        {% for header in headers %}
+        <th scope="col">{{ header }}</th>
+        {% endfor %}
+    </tr>
+    </thead>
+    <tbody class="table-group-divider">
+
+    <!--КЛИЕНТЫ-->
+    {% if recipients %}
+    {% for recipient in recipients %}
+    <tr>
+        <td>{{ recipient.email }}</td>
+        <td>{{ recipient.fullname }}</td>
+        <td>{{ recipient.id }}</td>
+        <td>
+            {% for action in actions %}
+            <a href="{% url action.url recipient.id %}" class="button btn {{ action.class }}">
+                {{ action.label }}
+            </a>
+            {% endfor %}
+        </td>
+    </tr>
+    {% endfor %}
+    {% endif %}
+
+    <!--СООБЩЕНИЯ-->
+    {% if messages %}
+    {% for message in messages %}
+    <tr>
+        <td>{{ message.title }}</td>
+        <td>{{ message.body|truncatechars:50 }}</td>
+        <td>{{ message.id }}</td>
+        <td>
+            {% for action in actions %}
+            <a href="{% url action.url message.id %}" class="button btn {{ action.class }}">
+                {{ action.label }}
+            </a>
+            {% endfor %}
+        </td>
+    </tr>
+    {% endfor %}
+    {% endif %}
+
+    <!--РАССЫЛКИ-->
+    {% if newsletters %}
+    {% for newsletter in newsletters %}
+    <tr>
+        <td>{{ newsletter.id }}</td>
+        <td>{% if not newsletter.first_sent %}Нет{% else %}{{ newsletter.first_sent }}{% endif %}</td>
+        <td>{% if not newsletter.last_sent %}Нет{% else %}{{ newsletter.last_sent }}{% endif %}</td>
+        <td>{{ newsletter.get_status_display }}</td>
+        <td>{{ newsletter.message|truncatechars:50 }}</td>
+           <td class="text-start">
+                <ul>
+                {% for r in newsletter.recipients.all %}
+                <li>{{ r }}</li>
+                    {% endfor %}
+                </ul>
+                </td>
+<!--        <td>{{ newsletter.recipients.count }}</td>-->
+        <td>
+            {% for action in actions %}
+            <div class="col mt-1">
+            <a href="{% url action.url newsletter.id %}" class="button btn {{ action.class }}">
+                {{ action.label }}
+            </a>
+                </div>
+            {% endfor %}
+        </td>
+    </tr>
+    {% endfor %}
+    {% endif %}
+    </tbody>
+</table>

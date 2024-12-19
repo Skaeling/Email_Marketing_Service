@@ -42,45 +42,45 @@
                                 указано{% endif %}</p>
                             <p class="card-text">{{ user.is_active }}</p>
 
-
                             {% if perms.users.can_block_user %}
                             <!-- Модальное окно для подтверждения действия -->
-                            <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel"
-                                 aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="confirmModalLabel">Подтверждение действия</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                    aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <form method="post" action="{% url 'users:user_update' user.pk %}">
-                                                {% csrf_token %}
-                                                <input type="hidden" name="is_active"
-                                                       value="{% if user.is_active %}False{% else %}True{% endif %}">
-                                                <div class="text-center">
-                                                    Вы действительно хотите {%if user.is_active %}заблокировать{% else
-                                                    %}разблокировать{% endif %} этого пользователя?
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary"
-                                                            data-bs-dismiss="modal">Нет
-                                                    </button>
-                                                    <button type="submit" class="btn btn-primary">Да</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <button type="button"
-                                    class="btn btn-{% if user.is_active %}danger{% else %}success{% endif %}"
-                                    data-bs-toggle="modal" data-bs-target="#confirmModal">
+<!--                            <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel"-->
+<!--                                 aria-hidden="true">-->
+<!--                                <div class="modal-dialog">-->
+<!--                                    <div class="modal-content">-->
+<!--                                        <div class="modal-header">-->
+<!--                                            <h5 class="modal-title" id="confirmModalLabel">Подтверждение действия</h5>-->
+<!--                                            <button type="button" class="btn-close" data-bs-dismiss="modal"-->
+<!--                                                    aria-label="Close"></button>-->
+<!--                                        </div>-->
+<!--                                        <div class="modal-body">-->
+<!--                                            <form method="post" action="{% url 'users:user_update' user.pk %}">-->
+<!--                                                {% csrf_token %}-->
+<!--                                                <input type="hidden" name="is_active"-->
+<!--                                                       value="{% if user.is_active %}False{% else %}True{% endif %}">-->
+<!--                                                <div class="text-center">-->
+<!--                                                    Вы действительно хотите {%if user.is_active %}заблокировать{% else-->
+<!--                                                    %}разблокировать{% endif %} этого пользователя?-->
+<!--                                                </div>-->
+<!--                                                <div class="modal-footer">-->
+<!--                                                    <button type="button" class="btn btn-secondary"-->
+<!--                                                            data-bs-dismiss="modal">Нет-->
+<!--                                                    </button>-->
+<!--                                                    <button type="submit" class="btn btn-primary">Да</button>-->
+<!--                                                </div>-->
+<!--                                            </form>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+                            <form method="post" action="{% url 'users:user_update' user.pk %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="is_active" value="{% if user.is_active %}False{% else %}True{% endif %}">
+                            <button type="submit"
+                                    class="btn btn-outline-{% if user.is_active %}danger{% else %}success{% endif %}">
                                 {% if user.is_active %}Заблокировать{% else %}Разблокировать{% endif %}
                             </button>
-
+                            </form>
                             {% endif %}
 
 
@@ -105,7 +105,5 @@
       });
     });
   });
-
-
 </script>
 {% endblock %}

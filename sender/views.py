@@ -31,9 +31,8 @@ def home(request):
 # CLIENT
 class RecipientListView(LoginRequiredMixin, ListView):
     model = Recipient
-    template_name = 'sender/recipients_list.html'
+    template_name = 'sender/recipients.html'
     context_object_name = 'recipients'
-    extra_context = {'title': 'Список получателей'}
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -41,6 +40,18 @@ class RecipientListView(LoginRequiredMixin, ListView):
         if user.has_perm('sender.can_view_all_clients'):
             return queryset
         return queryset.filter(creator=user)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Список получателей'
+        context['headers'] = ['Электронная почта', 'ФИО', 'ID', 'Опции']
+        context['actions'] = [
+            {'url': 'sender:recipient_update', 'class': 'btn btn-outline-primary', 'label': 'Редактировать'},
+            {'url': 'sender:recipient_detail', 'class': 'btn btn-outline-primary', 'label': 'Подробнее'},
+            {'url': 'sender:recipient_confirm_delete', 'class': 'btn btn-outline-danger', 'label': 'Удалить'},
+        ]
+
+        return context
 
 
 class RecipientCreateView(LoginRequiredMixin, CreateView):
@@ -96,9 +107,26 @@ class RecipientDeleteView(LoginRequiredMixin, DeleteView):
 # MESSAGE
 class MessageListView(ListView):
     model = Message
-    template_name = 'sender/messages_list.html'
+    template_name = 'sender/messages.html'
     context_object_name = 'messages'
-    extra_context = {'title': 'Список сообщений'}
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        user = self.request.user
+        if user.has_perm('sender.can_view_all_messages'):
+            return queryset
+        return queryset.filter(author=user)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Список сообщений'
+        context['headers'] = ['Заголовок', 'Тело сообщения', 'ID', 'Опции']
+        context['actions'] = [
+            {'url': 'sender:message_update', 'class': 'btn btn-outline-primary', 'label': 'Редактировать'},
+            {'url': 'sender:message_detail', 'class': 'btn btn-outline-primary', 'label': 'Подробнее'},
+            {'url': 'sender:message_confirm_delete', 'class': 'btn btn-outline-danger', 'label': 'Удалить'},
+        ]
+        return context
 
 
 class MessageCreateView(LoginRequiredMixin, CreateView):
@@ -106,6 +134,14 @@ class MessageCreateView(LoginRequiredMixin, CreateView):
     form_class = MessageForm
     template_name = 'sender/create_form.html'
     extra_context = {'title': 'Создать сообщение'}
+
+    def form_valid(self, form):
+        if form.is_valid():
+            message = form.save(commit=False)
+            message.author = self.request.user
+            message.save()
+
+        return super().form_valid(form)
 
 
 class MessageUpdateView(UpdateView):
@@ -133,17 +169,35 @@ class MessageDeleteView(LoginRequiredMixin, DeleteView):
 
 class NewsletterListView(LoginRequiredMixin, ListView):
     model = Newsletter
-    template_name = 'sender/newsletters_list.html'
+    template_name = 'sender/newsletters.html'
     context_object_name = 'newsletters'
-    extra_context = {'title': 'Список доступных рассылок'}
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        user = self.request.user
+        if user.has_perm('sender.can_view_all_newsletters'):
+            return queryset
+        return queryset.filter(owner=user)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Список доступных рассылок'
+        context['headers'] = ['ID', 'Дата старта', 'Дата завершения', 'Текущий статус', 'Сообщение',
+                              'Получатели', 'Опции']
+        context['actions'] = [
+            {'url': 'sender:newsletter_update', 'class': 'btn btn-outline-primary', 'label': 'Изменить'},
+            {'url': 'sender:newsletter_detail', 'class': 'btn btn-outline-primary', 'label': 'Подробнее'},
+            {'url': 'sender:newsletter_confirm_delete', 'class': 'btn btn-outline-danger', 'label': 'Удалить'},
+        ]
+
+        return context
 
 
-class NewsletterCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+class NewsletterCreateView(LoginRequiredMixin, CreateView):
     model = Newsletter
     form_class = NewsletterForm
     template_name = 'sender/create_form.html'
     extra_context = {'title': 'Создать рассылку'}
-    permission_required = 'sender.add_newsletter'
 
     def get_success_url(self, **kwargs):
         return reverse("sender:newsletter_detail", kwargs={'pk': self.object.pk})
@@ -188,8 +242,16 @@ class MailingAttemptCreateView(SuccessMessageMixin, CreateView, ListView):
     template_name = 'sender/mailing_create.html'
     success_url = reverse_lazy("sender:send_newsletter")
     extra_context = {'title': 'Мои рассылки',
-                     'header': 'Выберите из списка'
                      }
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['headers'] = ['ID', 'Дата старта', 'Дата завершения', 'Текущий статус', 'Сообщение',
+                              'Получатели', 'Опции']
+        context['actions'] = [
+            {'url': 'sender:newsletter_detail', 'class': 'btn btn-outline-primary', 'label': 'Подробнее'},
+        ]
+        return context
 
     def get_success_url(self, **kwargs):
         return reverse_lazy("sender:mailing_attempts")
