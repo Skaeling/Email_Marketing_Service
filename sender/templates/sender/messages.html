@@ -2,7 +2,7 @@
 {% block content%}
 {% include "sender/includes/inc_sender_header.html" with title=title header='Выберите сообщение или создайте новое'%}
 <div class="row d-flex justify-content-center">
-    <div class="col-10 mt-3">
+    <div class="col-8 mt-3">
         <div class="container p-5 mt-2 rounded bg-primary-subtle">
             {% if messages_list %}
                 {% include "sender/includes/table.html" with headers=headers items=messages actions=actions %}

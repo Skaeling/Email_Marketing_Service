@@ -1,7 +1,7 @@
 {% extends 'sender/base.html' %}
 {% block content%}
 
-{% include "sender/includes/inc_sender_header.html" with title=title header=header%}
+{% include "sender/includes/inc_sender_header.html" with title=title only%}
 
 {% if success_message %}
 <div class="alert alert-{% if success_message|slice:1 == 'Р'%}success{% else %}danger{% endif %} alert-dismissible fade show"
@@ -11,9 +11,22 @@
 
 </div>
 {% endif %}
+
+<div class="row">
+    <div class="col-12 mt-2">
+        <div class="container p-5 mt-2 rounded bg-primary-subtle">
+            {% if newsletters %}
+                {% include "sender/includes/table.html" with headers=headers items=newsletters actions=actions %}
+            {% else %}
+                <h4 class="text-center">У вас пока нет ни одной рассылки</h4>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
 <div class="row bg-secondary text-white text-center rounded pd-3">
     <h4>
-        Итоги
+        Результаты отправки
     </h4>
 </div>
 <div class="container-fluid bg-dark rounded pd-5">

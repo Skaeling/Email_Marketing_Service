@@ -1,6 +1,12 @@
 {% extends 'sender/base.html' %}
 {% block content%}
 {% include "sender/includes/inc_sender_header.html" with title=title header='Выберите из списка или создайте новую'%}
+    {% for message in messages %}
+    <div class="alert alert-info alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
 <div class="row">
     <div class="col-12 mt-2">
         <div class="container p-5 mt-2 rounded bg-primary-subtle">

@@ -1,3 +1,4 @@
+{% load static %}
 <table class="table table-border text-center">
     <thead>
     <tr class="table-secondary">
@@ -7,6 +8,7 @@
     </tr>
     </thead>
     <tbody class="table-group-divider">
+
 
     <!--КЛИЕНТЫ-->
     {% if recipients %}
@@ -18,29 +20,28 @@
         <td>
             {% if user.is_staff or user == recipient.creator %}
             <a href="{% url 'sender:recipient_update' recipient.pk %}" class="button btn btn-outline-primary">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                     class="bi bi-pencil-fill" viewBox="0 0 16 16">
-                    <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z"/>
-                </svg>
+                <img src="{% static 'img/update.svg' %}" alt="Pencil icon">
             </a>
             <a href="{% url 'sender:recipient_detail' recipient.pk %}"
-               class="button btn btn-outline-primary">Подробнее</a>
+               class="button btn btn-outline-primary"> <img src="{% static 'img/detail.svg' %}" alt="look icon">
+            </a>
+
             <a href="{% url 'sender:recipient_confirm_delete' recipient.pk %}"
                class="button btn btn-outline-danger">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                     class="bi bi-trash3-fill" viewBox="0 0 16 16">
-                    <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5"/>
-                </svg>
+                <img src="{% static 'img/delete.svg' %}" alt="Trash icon">
             </a>
             {% else %}
             <a href="{% url 'sender:recipient_detail' recipient.id %}" class="button btn btn-outline-primary">
-                Подробнее
+                <img src="{% static 'img/detail.svg' %}" alt="look icon">
+
             </a>
             {% endif %}
         </td>
     </tr>
     {% endfor %}
     {% endif %}
+    <!--КЛИЕНТЫ-->
+
 
     <!--СООБЩЕНИЯ-->
     {% if messages_list %}
@@ -52,29 +53,27 @@
         <td>
             {% if user.is_staff or user == message.author %}
             <a href="{% url 'sender:message_update' message.pk %}" class="button btn btn-outline-primary">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                     class="bi bi-pencil-fill" viewBox="0 0 16 16">
-                    <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z"/>
-                </svg>
+                <img src="{% static 'img/update.svg' %}" alt="Pencil icon">
             </a>
             <a href="{% url 'sender:message_detail' message.pk %}"
-               class="button btn btn-outline-primary">Подробнее</a>
+               class="button btn btn-outline-primary"> <img src="{% static 'img/detail.svg' %}" alt="look icon">
+            </a>
             <a href="{% url 'sender:message_confirm_delete' message.pk %}"
                class="button btn btn-outline-danger">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                     class="bi bi-trash3-fill" viewBox="0 0 16 16">
-                    <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5"/>
-                </svg>
+                <img src="{% static 'img/delete.svg' %}" alt="Trash icon">
             </a>
             {% else %}
             <a href="{% url 'sender:message_detail' message.id %}" class="button btn btn-outline-primary">
-                Подробнее
+                <img src="{% static 'img/detail.svg' %}" alt="look icon">
+
             </a>
             {% endif %}
         </td>
     </tr>
     {% endfor %}
     {% endif %}
+    <!--СООБЩЕНИЯ-->
+
 
     <!--РАССЫЛКИ-->
     {% if newsletters %}
@@ -95,39 +94,33 @@
         <td>
 
             {% if user.is_staff or user == newsletter.owner %}
-            <div class="row d-flex justify-content-center">
-            <a href="{% url 'sender:newsletter_update' newsletter.pk %}" class="button btn btn-outline-primary">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                     class="bi bi-pencil-fill" viewBox="0 0 16 16">
-                    <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z"/>
-                </svg>
-            </a>
-            <a href="{% url 'sender:newsletter_detail' newsletter.pk %}"
-               class="button btn btn-outline-primary">Подробнее</a>
-            <a href="{% url 'sender:newsletter_confirm_delete' newsletter.pk %}"
-               class="button btn btn-outline-danger">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                     class="bi bi-trash3-fill" viewBox="0 0 16 16">
-                    <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5"/>
-                </svg>
-            </a>
-            {% else %}
-                {% if newsletter.status != 'created' %}
-                            <form method="post" action="{% url 'sender:newsletter_update' newsletter.pk %}">
-                                {% csrf_token %}
-                                <input type="hidden" name="status" value="{% if newsletter.status == 'started' %}closed{% else %}created{% endif %}">
-                            <button type="submit"
-                                    class="btn btn-outline-danger">
-                                {% if newsletter.status == 'started' %}Завершить{% elif newsletter.status == 'closed' %}Возобновить{% endif %}
-                            </button>
-                            </form>
-                {% endif %}
+<!--            <div class="row flex-row justify-content-center">-->
+                <a href="{% url 'sender:newsletter_update' newsletter.pk %}" class="button btn btn-outline-primary">
+                    <img src="{% static 'img/update.svg' %}" alt="Pencil icon">
+                </a>
+                <a href="{% url 'sender:newsletter_detail' newsletter.pk %}"
+                   class="button btn btn-outline-primary"> <img src="{% static 'img/detail.svg' %}" alt="look icon">
+                </a>
+                <a href="{% url 'sender:newsletter_confirm_delete' newsletter.pk %}"
+                   class="button btn btn-outline-danger">
+                    <img src="{% static 'img/delete.svg' %}" alt="Trash icon">
+                </a>
+                {% else %}
+                <a href="{% url 'sender:newsletter_detail' newsletter.id %}" class="button btn btn-outline-primary">
+                    <img src="{% static 'img/detail.svg' %}" alt="look icon">
+                </a>
 
-            </a>
-            <a href="{% url 'sender:newsletter_detail' newsletter.id %}" class="button btn btn-outline-primary">
-                Подробнее
-            </a>
-                </div>
+                <!--  Форма блокировки рассылки -->
+                {% if newsletter.status == 'started' %}
+                <form method="post" action="{% url 'sender:newsletter_update' newsletter.pk %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="status" value="closed">
+                    <button type="submit" class="btn btn-outline-danger">
+                        Завершить
+                    </button>
+                </form>
+                {% endif %}
+<!--            </div>-->
             {% endif %}
         </td>
     </tr>

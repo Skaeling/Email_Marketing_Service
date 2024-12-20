@@ -1,37 +1,46 @@
 {% extends 'sender/base.html' %}
 {% block content%}
-{% include "sender/includes/inc_sender_header.html" with title=title header=message.title%}
+{% include "sender/includes/inc_sender_header.html" with title=title header=message.id %}
+<div class="col-12 text-center">
 
-<div class="coll-12 d-flex justify-content-center">
+    {% for message in messages %}
+                <div class="alert alert-info alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
 
-    <table class="table-primary table-bordered">
-        <thead>
-        <tr class="table-primary text-center">
-            <th scope="col">#</th>
-            <th scope="col">Заголовок</th>
-            <th scope="col">Тело сообщения</th>
-            <th scope="col">&nbsp;Опции&nbsp;</th>
+        <div class="mt-3 card text-center">
+            <div class="card-header bg-secondary">
+                <ul class="nav nav-pills card-header-pills">
+                <li class="nav-item">
+                    <a class="nav-link active bg-primary-subtle text-dark" href="#">Основные данные</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link link-light text-dark" href="{% url 'sender:message_update' message.pk %}">Редактировать</a>
 
-        </tr>
-        </thead>
-        <tbody>
-        <tr class="table-primary">
-            <th scope="row">&nbsp;{{ message.id }}&nbsp;</th>
-            <td class="table-primary">&nbsp;{{ message.title }}&nbsp;</td>
-            <td class="table-primary">&nbsp;{{ message.body }}&nbsp;</td>
-            <td class="table-primary">&nbsp;
-                <a href="{% url 'sender:message_update' message.pk %}" class="button btn btn-primary">Редактировать</a>
-                <a href="{% url 'sender:message_confirm_delete' message.pk %}" class="button btn btn-danger">Удалить</a>&nbsp;
-            </td>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link link-danger text-dark" href="{% url 'sender:message_confirm_delete' message.pk %}">Удалить</a>
+                </li>
 
-        </tr>
-    </table>
-    </div>
+                </ul>
+            </div>
+
+
+            <div class="card-body bg-primary-subtle">
+                <h5 class="card-title">Заголовок: {{ message.title }}</h5>
+                <p class="mt-3 card-text">Тело сообщения: {{ message.body }}</p>
+                <p class="mt-3 card-text">Владелец: {{ message.author }}</p>
+                <a href="{% url 'sender:home' %}" class="btn btn-outline-primary">На главную</a>
+            </div>
+        </div>
+</div>
+
     <div class="container mt-5 text-center">
-                <a href="{% url 'sender:messages_list' %}" class="button btn btn-primary">К списку сообщений</a>
-                <a href="{% url 'sender:message_create' %}" class="button btn btn-primary">Добавить новое сообщение</a>
+                <a href="{% url 'sender:messages_list' %}" class="button btn btn-outline-primary">К списку сообщений</a>
+                <a href="{% url 'sender:message_create' %}" class="button btn btn-outline-primary">Добавить новое сообщение</a>
 
     </div>
-
 
 {% endblock %}
