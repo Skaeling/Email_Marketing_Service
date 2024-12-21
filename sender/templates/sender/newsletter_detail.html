@@ -2,6 +2,13 @@
 {% block content%}
 {% include "sender/includes/inc_sender_header.html" with title=title header=newsletter.message.title%}
 
+    {% for message in messages %}
+    <div class="alert alert-info alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+
 <div class="coll-12 d-flex justify-content-center">
 
     <table class="table-primary table-bordered">

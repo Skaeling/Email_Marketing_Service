@@ -3,7 +3,7 @@ import os
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.views.generic.edit import UpdateView, CreateView, DeleteView
 from django.views.generic import ListView, DetailView
@@ -135,11 +135,13 @@ class MessageCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class MessageUpdateView(UpdateView):
+class MessageUpdateView(SuccessMessageMixin, UpdateView):
     model = Message
     form_class = MessageForm
     template_name = 'sender/create_form.html'
     extra_context = {'title': 'Редактировать сообщение'}
+    success_message = "Обновления сохранены"
+
 
     # def get_object(self, queryset=None):
     #     message = super().get_object(queryset)
@@ -169,7 +171,8 @@ class MessageDeleteView(LoginRequiredMixin, DeleteView):
             return message
         raise PermissionDenied
 
-#  NEWSLETTER
+
+                                                            #  NEWSLETTER
 
 
 class NewsletterListView(LoginRequiredMixin, ListView):
@@ -199,6 +202,19 @@ class NewsletterCreateView(LoginRequiredMixin, CreateView):
     template_name = 'sender/create_form.html'
     extra_context = {'title': 'Создать рассылку'}
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request  # добавляем request объект в kwargs
+        return kwargs
+
+    # def get_queryset(self):
+    #     queryset = super().get_queryset()
+    #     user = self.request.user
+    #     if user.has_perm('sender.can_view_all_messages'):
+    #         return queryset
+    #     return queryset.filter(owner=user, recipients=user)
+
+
     def get_success_url(self, **kwargs):
         return reverse("sender:newsletter_detail", kwargs={'pk': self.object.pk})
 
@@ -216,6 +232,11 @@ class NewsletterUpdateView(SuccessMessageMixin, UpdateView):
     template_name = 'sender/create_form.html'
     extra_context = {'title': 'Редактировать рассылку'}
     success_message = "Обновления сохранены"
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request  # добавляем request объект в kwargs
+        return kwargs
 
     def get_success_url(self, **kwargs):
         if self.get_form_class() == ModeratorNewsletterForm:
@@ -253,31 +274,36 @@ class NewsletterDeleteView(LoginRequiredMixin, DeleteView):
             return newsletter
         raise PermissionDenied
 
+                                                                # MAILINGATTEMPT
 
-class MailingAttemptCreateView(SuccessMessageMixin, LoginRequiredMixin, CreateView, ListView):
-    model = Newsletter
-    form_class = MailingAttemptForm
+
+class MailingAttemptCreateView(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     context_object_name = 'newsletters'
+    form_class = MailingAttemptForm
     template_name = 'sender/mailing_create.html'
     success_url = reverse_lazy("sender:send_newsletter")
     extra_context = {'title': 'Мои рассылки',
                      }
+    # user_field = "newsletter"
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['headers'] = ['ID', 'Дата старта', 'Дата завершения', 'Текущий статус', 'Сообщение',
                               'Получатели', 'Опции']
+        newsletters = Newsletter.objects.filter(owner=self.request.user)
+        context['newsletters'] = newsletters
 
         return context
 
+    #
+
     def get_success_url(self, **kwargs):
         return reverse_lazy("sender:mailing_attempts")
-
-    # def get_form_class(self):
-    #     newsletter = self.get_object(queryset=None)
-    #     if newsletter.owner == self.request.user:
-    #         return MailingAttemptForm
-    #     raise PermissionDenied
 
     def form_valid(self, form):
         if form.is_valid():
@@ -315,13 +341,24 @@ class MailingAttemptListView(ListView):
     model = MailingAttempt
     template_name = 'sender/mailing_attempts.html'
     context_object_name = 'mailings'
-    extra_context = {'title': 'Мои рассылки',
+    extra_context = {'title': 'Статистика',
                      'header': 'Результаты отправки'
                      }
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['headers'] = ['ID', 'Дата старта', 'Дата завершения', 'Текущий статус', 'Сообщение',
+                              'Получатели', 'Опции']
+        newsletters = Newsletter.objects.filter(owner=self.request.user)
+        context['newsletters'] = newsletters
         success_message = self.request.GET.get('success_message')
         if success_message:
             context['success_message'] = success_message
         return context
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        user = self.request.user
+        if user.has_perm('sender.can_view_all_newsletters'):
+            return queryset
+        return queryset.filter(newsletter__owner=user)

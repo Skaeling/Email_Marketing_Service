@@ -2,23 +2,43 @@
 {% load crispy_forms_tags %}
 {% block content%}
 {% include "sender/includes/inc_sender_header.html" with title=title header='Выберите рассылку для отправки'%}
+
+{% if newsletters %}
+<div class="container d-flex justify-content-center">
+    <div class="col-10 mt-3">
+<!--        <form method="post" enctype="multipart/form-data" action="" class="form-control">-->
+<!--                                {% csrf_token %}-->
+<!--            {{ form.as_p }}-->
+<!--            <button type="submit" class="btn btn-info">-->
+<!--                                    {% if object %}-->
+<!--                                    Сохранить пост-->
+<!--                                    {% else %}-->
+<!--                                    Cоздать пост-->
+<!--                                    {% endif %}-->
+<!--                                </button>-->
+<!--        </form>-->
+        {% crispy form %}
+
+    </div>
+</div>
+{% endif %}
+
 <div class="row">
     <div class="col-12 mt-2">
         <div class="container p-5 mt-2 rounded bg-primary-subtle">
             {% if newsletters %}
-                {% include "sender/includes/table.html" with headers=headers items=newsletters actions=actions %}
+            {% include "sender/includes/table.html" with headers=headers items=newsletters actions=actions %}
             {% else %}
-                <h4 class="text-center">У вас пока нет ни одной рассылки</h4>
+            <h4 class="text-center">У вас пока нет ни одной рассылки</h4>
+            <div class="container mt-2 text-center">
+                <a href="{% url 'sender:newsletter_create' %}" class="button btn btn-outline-primary">Добавить новую</a>
+            </div>
             {% endif %}
         </div>
+
     </div>
 </div>
 
-<div class="container d-flex justify-content-center">
-    <div class="col-10 mt-3">
-        {% crispy form %}
-    </div>
-</div>
 
 {% endblock %}
 

@@ -12,24 +12,13 @@
 </div>
 {% endif %}
 
-<div class="row">
-    <div class="col-12 mt-2">
-        <div class="container p-5 mt-2 rounded bg-primary-subtle">
-            {% if newsletters %}
-                {% include "sender/includes/table.html" with headers=headers items=newsletters actions=actions %}
-            {% else %}
-                <h4 class="text-center">У вас пока нет ни одной рассылки</h4>
-            {% endif %}
-        </div>
-    </div>
-</div>
 
-<div class="row bg-secondary text-white text-center rounded pd-3">
+<div class="container-fluid bg-dark rounded pd-5">
+    <div class="row bg-secondary text-white text-center rounded pd-3">
     <h4>
         Результаты отправки
     </h4>
 </div>
-<div class="container-fluid bg-dark rounded pd-5">
     {% for mailing in mailings %}
 
     <ul class="list-group">
@@ -40,12 +29,33 @@
     </ul>
 
     {% endfor %}
+
+
+<div class="row">
+
+        <div class="container-fluid p-5 mt-2 rounded bg-primary-subtle">
+            <div class="col-12 mt-2">
+                <div class="row bg-secondary text-white text-center rounded pd-3">
+                    <h4>
+                        Мои рассылки
+                    </h4>
+                </div>
+            </div>
+
+            {% if newsletters %}
+                {% include "sender/includes/table.html" with headers=headers items=newsletters actions=actions %}
+            {% else %}
+                <h4 class="text-center">У вас пока нет ни одной рассылки</h4>
+            {% endif %}
+        </div>
+    </div>
 </div>
+
 {% endblock %}
 
-{% for message in messages %}
-<div class="alert alert-info alert-dismissible fade show" role="alert">
-    {{ message }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
+<!--{% for message in messages %}-->
+<!--<div class="alert alert-info alert-dismissible fade show" role="alert">-->
+<!--    {{ message }}-->
+<!--    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>-->
+<!--</div>-->
 {% endfor %}

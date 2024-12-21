@@ -37,9 +37,20 @@ class NewsletterForm(CustomCreateForm):
     class Meta:
         model = Newsletter
         exclude = ('status', 'first_sent', 'last_sent', 'owner',)
-        labels = {'message': 'Рассылка',
+        labels = {'message': 'Сообщение',
                   'recipients': 'Получатели',
                   }
+
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request')  # извлекаем request объект из kwargs
+        super().__init__(*args, **kwargs)
+        if self.request.user.has_perm('sender.can_view_all_messages') and self.request.user.has_perm(
+                'sender.can_view_all_clients'):
+            self.fields['recipients'].queryset = Recipient.objects.all()
+            self.fields['message'].queryset = Message.objects.all()
+        else:
+            self.fields['recipients'].queryset = Recipient.objects.filter(creator=self.request.user)
+            self.fields['message'].queryset = Message.objects.filter(author=self.request.user)
 
 
 class ModeratorNewsletterForm(CustomCreateForm):
@@ -52,3 +63,20 @@ class MailingAttemptForm(CustomCreateForm):
     class Meta:
         model = MailingAttempt
         fields = ('newsletter',)
+        labels = {'newsletter': 'Номер рассылки',
+                  }
+    # ПЕРЕРАБОТАТЬ в сервисную
+    # def __init__(self, *args, **kwargs):
+    #     user = kwargs.pop('user', None)
+    #     super().__init__(*args, **kwargs)
+    #     if user:
+    #         self.fields['newsletter'] = Newsletter.objects.filter(owner=user)
+    # def __init__(self, user=None, **kwargs):
+    #     super(MailingAttemptForm, self).__init__(**kwargs)
+    #     if user:
+    #         self.fields['newsletter'].queryset = Newsletter.objects.filter(owner=user)
+
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request')
+        super().__init__(*args, **kwargs)
+        self.fields['newsletter'].queryset = Newsletter.objects.filter(owner=self.request.user)
