@@ -65,11 +65,12 @@ class RecipientCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class RecipientUpdateView(LoginRequiredMixin, UpdateView):
+class RecipientUpdateView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     model = Recipient
     form_class = RecipientForm
     template_name = 'sender/create_form.html'
     extra_context = {'title': 'Редактировать получателя'}
+    success_message = "Обновления сохранены"
 
     def get_object(self, queryset=None):
         recipient = super().get_object(queryset)
@@ -343,7 +344,7 @@ class MailingAttemptListView(ListView):
                      }
 
     def get_context_data(self, **kwargs):
-        """Всем позволяет увидеть только свои рассылки"""
+        """Всем группам пользователей позволяет увидеть только свои рассылки"""
         context = super().get_context_data(**kwargs)
         context['headers'] = ['ID', 'Дата старта', 'Дата завершения', 'Текущий статус', 'Сообщение',
                               'Получатели', 'Опции']

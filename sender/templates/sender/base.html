@@ -12,6 +12,7 @@
             font-size: 7pt;
              }
 
+
     </style>
 </head>
 
@@ -23,27 +24,40 @@
 </div>
 <!--  Основная колонка -->
 <div class="container-xxl">
-<div class='row'>
-    <div class="col-12 mt-3">
-        {% block content %}
-        {% endblock %}
-    </div>
-</div>
+    <div class='row'>
+        <div class="col-12 mt-3">
 
-<div class="row text-secondary text-center mt-2 mb-2">
-    <div class="container d-flex align-items-end justify-content-end bg-secondary mb-2">
-        <h6 class="text-secondary"></h6>
-    </div>
-</div>
+<!--Информационные сообщения -->
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-{% if message.tags == 'success' %}success{% else %}danger{% endif %} alert-dismissible fade show"
+                 role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
+            {% endif %}
 
-<div class='row'>
-    <div class="col-12 d-flex align-items-end justify-content-end ">
-        <footer>
-            <p class="p-small">&copy; Company 2024-2025</p>
-        </footer>
+<!--Контент-->
+            {% block content %}
+            {% endblock %}
+        </div>
+    </div>
+
+    <div class="row text-secondary text-center mt-2 mb-2">
+        <div class="container d-flex align-items-end justify-content-end bg-secondary mb-2">
+            <h6 class="text-secondary"></h6>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class="col-12 d-flex align-items-end justify-content-end ">
+            <footer>
+                <p class="p-small">&copy; Company 2024-2025</p>
+            </footer>
+        </div>
     </div>
 </div>
-    </div>
 
 <script src="/static/js/bootstrap.bundle.min.js"></script>
 </body>

@@ -3,15 +3,6 @@
 
 {% include "sender/includes/inc_sender_header.html" with title=title only%}
 
-{% if messages %}
-{% for message in messages %}
-<div class="alert alert-{% if message.tags == 'success' %}success{% else %}danger{% endif %} alert-dismissible fade show" role="alert">
-    {{ message }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-{% endfor %}
-{% endif %}
-
 <div class="row row-cols-2">
 
     <div class="col">
