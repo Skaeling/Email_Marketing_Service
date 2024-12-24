@@ -14,7 +14,11 @@
 </div>
 
 <div class="container mt-5 text-center">
+    {% if perms.sender.can_view_all_clients%}
+    <a href="{% url 'sender:home' %}" class="button btn btn-outline-primary">На Главную</a>
+    {% else %}
     <a href="{% url 'sender:home' %}" class="button btn btn-outline-primary">На Главную</a>
     <a href="{% url 'sender:recipient_create' %}" class="button btn btn-outline-primary">Добавить нового получателя</a>
+    {% endif %}
 </div>
 {% endblock %}
