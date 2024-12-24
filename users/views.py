@@ -1,13 +1,13 @@
 from django.contrib.auth import login
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
-from django.contrib.auth.views import PasswordResetView, LoginView, PasswordContextMixin
+from django.contrib.auth.views import PasswordResetView, LoginView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, redirect
 
 from .forms import CustomUserCreationForm, CustomUpdateForm, ModeratorUpdateForm, CustomLoginForm
-from django.views.generic.edit import UpdateView, CreateView, DeleteView, FormView
+from django.views.generic.edit import UpdateView, CreateView
 from django.views.generic import ListView, DetailView
 from django.urls import reverse_lazy, reverse
 
@@ -40,12 +40,6 @@ class CustomLoginView(SuccessMessageMixin, LoginView):
 
         if not user.is_active:
             form.add_error(None, 'Ваш аккаунт неактивен. Пожалуйста, свяжитесь с администратором.')
-        # elif not user:
-        #     form.add_error(None, 'Пользователь с таким email не найден.')
-        # else:
-        #     form.add_error(None,
-        #                    'Пожалуйста, введите правильные email и пароль. '
-        #                    'Оба поля могут быть чувствительны к регистру.')
         return self.render_to_response(self.get_context_data(form=form))
 
 
@@ -103,17 +97,6 @@ class ResetPasswordView(SuccessMessageMixin, PasswordResetView):
     template_name = 'users/password_reset.html'
     email_template_name = 'users/password_reset_email.html'
     subject_template_name = 'users/password_reset_subject.txt'
-    success_message = "На указанную вами почту направлена инструкция по сбросу пароля, " \
+    success_message = "На указанную вами почту направлена инструкция по сбросу пароля. " \
                       " Если вы не получили письмо, проверьте папку спам."
     success_url = reverse_lazy('sender:home')
-
-# class PasswordResetView(PasswordContextMixin, FormView):
-#     """
-#    success_url = reverse_lazy("{app_name}:password_reset_done")
-#     """
-#
-#
-# class PasswordResetConfirmView(PasswordContextMixin, FormView):
-#    """
-#    success_url = reverse_lazy("{app_name}:password_reset_complete")
-#    """
