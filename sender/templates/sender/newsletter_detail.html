@@ -1,4 +1,5 @@
 {% extends 'sender/base.html' %}
+{% load static %}
 {% block content%}
 {% include "sender/includes/inc_sender_header.html" with title=title header=newsletter.message.title%}
 
@@ -42,8 +43,26 @@
 
 
             <td class="table-primary">&nbsp;
-                <a href="{% url 'sender:newsletter_update' newsletter.pk %}" class="btn btn-primary">Редактировать</a>
-                <a href="{% url 'sender:newsletter_confirm_delete' newsletter.pk %}" class="button btn btn-danger">Удалить</a>&nbsp;
+                {% if user.is_staff or user == newsletter.owner %}
+                <a href="{% url 'sender:newsletter_update' newsletter.pk %}" class="button btn btn-outline-primary">
+                    <img src="{% static 'img/update.svg' %}" alt="Pencil icon">
+                </a>
+                <a href="{% url 'sender:newsletter_confirm_delete' newsletter.pk %}"
+                   class="button btn btn-outline-danger">
+                    <img src="{% static 'img/delete.svg' %}" alt="Trash icon">
+                </a>
+                {% else %}
+                <!--  Форма блокировки рассылки -->
+                {% if newsletter.status == 'started' %}
+                <form method="post" action="{% url 'sender:newsletter_update' newsletter.pk %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="status" value="closed">
+                    <button type="submit" class="btn btn-outline-danger">
+                        Завершить
+                    </button>
+                </form>
+                {% endif %}
+            {% endif %}
             </td>
 
         </tr>
@@ -54,6 +73,17 @@
                 <a href="{% url 'sender:newsletter_create' %}" class="button btn btn-primary">Добавить новую рассылку</a>
 
     </div>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const confirmButtons = document.querySelectorAll('.confirm-action');
+    confirmButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        const form = button.closest('form');
+        form.submit();
+      });
+    });
+  });
 
+</script>
 
 {% endblock %}

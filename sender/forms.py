@@ -14,8 +14,8 @@ class CustomCreateForm(forms.ModelForm):
             Fieldset('', *self.fields, css_class='form-control border-primary', style='font-size: 13px;'),
             Row(
                 Column(HTML(
-                    '<a class="btn btn-lg btn-outline-primary form-group" href="javascript:history.back()">Назад</a>')),
-                Column(Submit('submit', '{% if object %}Сохранить{% else %}Создать{% endif %}', css_class='btn btn-lg btn-primary form-group')),
+                    '<a class="btn btn-outline-primary form-group" href="javascript:history.back()">Назад</a>')),
+                Column(Submit('submit', '{% if object %}Сохранить{% else %}Ок{% endif %}', css_class='btn btn-primary form-group')),
                 css_class='col-12 mt-2 text-center'
             )
         )
@@ -42,7 +42,7 @@ class NewsletterForm(CustomCreateForm):
                   }
 
     def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop('request')  # извлекаем request объект из kwargs
+        self.request = kwargs.pop('request')
         super().__init__(*args, **kwargs)
         if self.request.user.has_perm('sender.can_view_all_messages') and self.request.user.has_perm(
                 'sender.can_view_all_clients'):
@@ -58,6 +58,10 @@ class ModeratorNewsletterForm(CustomCreateForm):
         model = Newsletter
         fields = ('status',)
 
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request')
+        super().__init__(*args, **kwargs)
+
 
 class MailingAttemptForm(CustomCreateForm):
     class Meta:
@@ -65,18 +69,11 @@ class MailingAttemptForm(CustomCreateForm):
         fields = ('newsletter',)
         labels = {'newsletter': 'Номер рассылки',
                   }
-    # ПЕРЕРАБОТАТЬ в сервисную
-    # def __init__(self, *args, **kwargs):
-    #     user = kwargs.pop('user', None)
-    #     super().__init__(*args, **kwargs)
-    #     if user:
-    #         self.fields['newsletter'] = Newsletter.objects.filter(owner=user)
-    # def __init__(self, user=None, **kwargs):
-    #     super(MailingAttemptForm, self).__init__(**kwargs)
-    #     if user:
-    #         self.fields['newsletter'].queryset = Newsletter.objects.filter(owner=user)
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request')
         super().__init__(*args, **kwargs)
-        self.fields['newsletter'].queryset = Newsletter.objects.filter(owner=self.request.user)
+        if self.request.user.has_perm('sender.can_view_all_newsletters'):
+            self.fields['newsletter'].queryset = Newsletter.objects.all()
+        else:
+            self.fields['newsletter'].queryset = Newsletter.objects.filter(owner=self.request.user)

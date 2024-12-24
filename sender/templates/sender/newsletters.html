@@ -1,27 +1,49 @@
 {% extends 'sender/base.html' %}
 {% block content%}
 {% include "sender/includes/inc_sender_header.html" with title=title header='Выберите из списка или создайте новую'%}
-    {% for message in messages %}
-    <div class="alert alert-info alert-dismissible fade show" role="alert">
-        {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-    {% endfor %}
+{% for message in messages %}
+<div class="alert alert-info alert-dismissible fade show" role="alert">
+    {{ message }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endfor %}
 <div class="row">
     <div class="col-12 mt-2">
         <div class="container p-5 mt-2 rounded bg-primary-subtle">
-            {% if newsletters %}
-                {% include "sender/includes/table.html" with headers=headers items=newsletters actions=actions %}
+            {% if not perms.sender.can_view_all_newsletters %}
+            {% if not clients or not user_messages %}
+                <div class="container text-center">
+                <p>У вас пока нет получателей или сообщений.</p>
+                <p>Добавьте их в соответствующих разделах.</p>
+                </div>
             {% else %}
-                <h4 class="text-center">У вас пока нет ни одной рассылки</h4>
+                {% if newsletters %}
+                    {% include "sender/includes/table.html" with headers=headers items=newsletters actions=actions %}
+                {% else %}
+                <div class="container text-center">
+                    <p>У вас пока нет ни одной рассылки</p>
+                </div>
+                {% endif %}
+                {% endif %}
+            {% else %}
+                    {% include "sender/includes/table.html" with headers=headers items=newsletters actions=actions %}
             {% endif %}
         </div>
     </div>
 </div>
 
 <div class="container mt-2 text-center">
+    {% if perms.sender.can_view_all_newsletters%}
     <a href="{% url 'sender:home' %}" class="button btn btn-outline-primary">На Главную</a>
-    <a href="{% url 'sender:newsletter_create' %}" class="button btn btn-outline-primary">Добавить новую рассылку</a>
+    {% else %}
+        {% if clients and user_messages %}
+        <a href="{% url 'sender:newsletter_create' %}" class="button btn btn-outline-primary">Добавить новую рассылку</a>
+        {% else %}
+        <a href="{% url 'sender:recipient_create' %}" class="button btn btn-outline-primary">Добавить получателя</a>
+        <a href="{% url 'sender:message_create' %}" class="button btn btn-outline-primary">Добавить сообщение</a>
+        {% endif %}
+    {% endif %}
+
 </div>
 <script>
   document.addEventListener('DOMContentLoaded', function() {
@@ -33,5 +55,6 @@
       });
     });
   });
+
 </script>
 {% endblock %}

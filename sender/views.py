@@ -1,8 +1,9 @@
 import os
+import smtplib
 
+from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import PermissionDenied
-from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.views.generic.edit import UpdateView, CreateView, DeleteView
@@ -28,7 +29,7 @@ def home(request):
     return render(request, 'sender/home.html', extra_context)
 
 
-# CLIENT
+                                                                # CLIENT
 class RecipientListView(LoginRequiredMixin, ListView):
     model = Recipient
     template_name = 'sender/recipients.html'
@@ -70,12 +71,12 @@ class RecipientUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'sender/create_form.html'
     extra_context = {'title': 'Редактировать получателя'}
 
-    # def get_object(self, queryset=None):
-    #     recipient = super().get_object(queryset)
-    #     user = self.request.user
-    #     if user.is_staff or user == recipient.creator:
-    #         return recipient
-    #     raise PermissionDenied
+    def get_object(self, queryset=None):
+        recipient = super().get_object(queryset)
+        user = self.request.user
+        if user.is_staff or user == recipient.creator:
+            return recipient
+        raise PermissionDenied
 
 
 class RecipientDetailView(LoginRequiredMixin, DetailView):
@@ -99,8 +100,9 @@ class RecipientDeleteView(LoginRequiredMixin, DeleteView):
         raise PermissionDenied
 
 
-# MESSAGE
-class MessageListView(ListView):
+                                                                # MESSAGE
+
+class MessageListView(LoginRequiredMixin, ListView):
     model = Message
     template_name = 'sender/messages.html'
     context_object_name = 'messages_list'
@@ -142,13 +144,12 @@ class MessageUpdateView(SuccessMessageMixin, UpdateView):
     extra_context = {'title': 'Редактировать сообщение'}
     success_message = "Обновления сохранены"
 
-
-    # def get_object(self, queryset=None):
-    #     message = super().get_object(queryset)
-    #     user = self.request.user
-    #     if user.is_staff or user == message.author:
-    #         return message
-    #     raise PermissionDenied
+    def get_object(self, queryset=None):
+        message = super().get_object(queryset)
+        user = self.request.user
+        if user.is_staff or user == message.author:
+            return message
+        raise PermissionDenied
 
 
 class MessageDetailView(DetailView):
@@ -192,7 +193,8 @@ class NewsletterListView(LoginRequiredMixin, ListView):
         context['title'] = 'Список доступных рассылок'
         context['headers'] = ['ID', 'Дата старта', 'Дата завершения', 'Текущий статус', 'Сообщение',
                               'Получатели', 'Опции']
-
+        context['clients'] = Recipient.objects.filter(creator=self.request.user)
+        context['user_messages'] = Message.objects.filter(author=self.request.user)
         return context
 
 
@@ -204,16 +206,8 @@ class NewsletterCreateView(LoginRequiredMixin, CreateView):
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs['request'] = self.request  # добавляем request объект в kwargs
+        kwargs['request'] = self.request
         return kwargs
-
-    # def get_queryset(self):
-    #     queryset = super().get_queryset()
-    #     user = self.request.user
-    #     if user.has_perm('sender.can_view_all_messages'):
-    #         return queryset
-    #     return queryset.filter(owner=user, recipients=user)
-
 
     def get_success_url(self, **kwargs):
         return reverse("sender:newsletter_detail", kwargs={'pk': self.object.pk})
@@ -235,7 +229,7 @@ class NewsletterUpdateView(SuccessMessageMixin, UpdateView):
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs['request'] = self.request  # добавляем request объект в kwargs
+        kwargs['request'] = self.request
         return kwargs
 
     def get_success_url(self, **kwargs):
@@ -281,10 +275,9 @@ class MailingAttemptCreateView(SuccessMessageMixin, LoginRequiredMixin, CreateVi
     context_object_name = 'newsletters'
     form_class = MailingAttemptForm
     template_name = 'sender/mailing_create.html'
-    success_url = reverse_lazy("sender:send_newsletter")
-    extra_context = {'title': 'Мои рассылки',
+    success_url = reverse_lazy("sender:mailing_attempts")
+    extra_context = {'title': 'Отправить рассылку',
                      }
-    # user_field = "newsletter"
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -295,46 +288,50 @@ class MailingAttemptCreateView(SuccessMessageMixin, LoginRequiredMixin, CreateVi
         context = super().get_context_data(**kwargs)
         context['headers'] = ['ID', 'Дата старта', 'Дата завершения', 'Текущий статус', 'Сообщение',
                               'Получатели', 'Опции']
-        newsletters = Newsletter.objects.filter(owner=self.request.user)
+        if self.request.user.has_perm('sender.can_view_all_newsletters'):
+            newsletters = Newsletter.objects.all()
+        else:
+            newsletters = Newsletter.objects.filter(owner=self.request.user)
         context['newsletters'] = newsletters
 
         return context
-
-    #
-
-    def get_success_url(self, **kwargs):
-        return reverse_lazy("sender:mailing_attempts")
 
     def form_valid(self, form):
         if form.is_valid():
             attempt = form.save(commit=False)
             newsletter = Newsletter.objects.get(pk=attempt.newsletter.pk)
-            if mail_attempt(newsletter):
+            success, response = mail_attempt(newsletter)
+            if success:
                 attempt.exc_state = MailingAttempt.SUCCESSFUL
+                attempt.server_response = response
+                attempt.save()
+                messages.add_message(self.request, messages.SUCCESS, "Рассылка успешно отправлена")
                 if newsletter.status == 'created':
                     newsletter.status = 'started'
                     newsletter.first_sent = timezone.now()
                     newsletter.save()
-                attempt.save()
-
-                success_message = "Рассылка успешно отправлена"
-                print(f'Попытка рассылки состоялась')
             else:
-                attempt.server_response = 'error'
+                attempt.server_response = response
                 attempt.save()
-                print("error")
-                success_message = "Ошибка при отправке рассылки"
-        return HttpResponseRedirect(reverse('sender:mailing_attempts') + f'?success_message={success_message}')
+                messages.add_message(self.request, messages.ERROR, "Ошибка при отправке рассылки")
+        return redirect(self.success_url)
 
 
 def mail_attempt(newsletter):
-    email_list = list(newsletter.recipients.values_list('email', flat=True))
+    to = list(newsletter.recipients.values_list('email', flat=True))
+    if not to:
+        return False, "Нет адресатов для рассылки"
     sender = os.getenv('EMAIL_DEFAULT_USER')
-    to = []  # заменить [] на email_list для включения опции рассылки
-
     title = newsletter.message.title
     message = newsletter.message.body
-    return send_mail(title, message, sender, to, fail_silently=False)
+    try:
+        response = send_mail(title, message, sender, to, fail_silently=False)
+        print("Рассылка отправлена успешно")
+        print(response)
+        return True, response
+    except smtplib.SMTPException as e:
+        print(f"Ошибка при отправке письма: {e}")
+        return False, str(e)
 
 
 class MailingAttemptListView(ListView):
@@ -346,17 +343,16 @@ class MailingAttemptListView(ListView):
                      }
 
     def get_context_data(self, **kwargs):
+        """Всем позволяет увидеть только свои рассылки"""
         context = super().get_context_data(**kwargs)
         context['headers'] = ['ID', 'Дата старта', 'Дата завершения', 'Текущий статус', 'Сообщение',
                               'Получатели', 'Опции']
         newsletters = Newsletter.objects.filter(owner=self.request.user)
         context['newsletters'] = newsletters
-        success_message = self.request.GET.get('success_message')
-        if success_message:
-            context['success_message'] = success_message
         return context
 
     def get_queryset(self):
+        """Менеджеру позволяет увидеть все попытки рассылок, а пользователю только свои"""
         queryset = super().get_queryset()
         user = self.request.user
         if user.has_perm('sender.can_view_all_newsletters'):

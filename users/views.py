@@ -4,7 +4,7 @@ from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMix
 from django.contrib.auth.views import PasswordResetView, LoginView, PasswordContextMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import PermissionDenied
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 
 from .forms import CustomUserCreationForm, CustomUpdateForm, ModeratorUpdateForm, CustomLoginForm
 from django.views.generic.edit import UpdateView, CreateView, DeleteView, FormView
@@ -14,24 +14,23 @@ from django.urls import reverse_lazy, reverse
 from .models import CustomUser
 
 
-class RegisterView(CreateView):
+class RegisterView(SuccessMessageMixin, CreateView):
     template_name = 'users/register.html'
     extra_context = {'title': 'Регистрация нового пользователя'}
     form_class = CustomUserCreationForm
-
-    def get_success_url(self):
-        return reverse_lazy("users:user_detail", kwargs={'pk': self.object.pk})
+    success_url = reverse_lazy('sender:home')
 
     def form_valid(self, form):
         user = form.save()
         login(self.request, user)
         messages.success(self.request, "Регистрация прошла успешно!")
-        return super().form_valid(form)
+        return redirect(self.success_url)
 
 
 class CustomLoginView(SuccessMessageMixin, LoginView):
     template_name = 'users/login.html'
-    authentication_form = CustomLoginForm
+    form_class = CustomLoginForm
+    redirect_authenticated_user = True
     extra_context = {'title': 'Авторизация'}
     success_message = 'Вы успешно вошли в систему!'
 
