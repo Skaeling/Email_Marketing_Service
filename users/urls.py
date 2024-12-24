@@ -1,13 +1,14 @@
 from django.urls import path, reverse_lazy
 
 from .views import RegisterView, CustomLoginView, CustomUserDetailView, CustomUserUpdateView, ResetPasswordView, \
-    CustomUserListView
+    CustomUserListView, email_verification
 from django.contrib.auth.views import LogoutView, PasswordResetConfirmView, PasswordResetCompleteView
 
 app_name = 'users'
 
 urlpatterns = [
-    path('users/', RegisterView.as_view(), name='register'),
+    path('register/', RegisterView.as_view(), name='register'),
+    path('confirm-email/<str:token>/', email_verification, name='confirm-email'),
     path('login/', CustomLoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(next_page='sender:home'), name='logout'),
     path('profiles_list/', CustomUserListView.as_view(), name='user_list'),

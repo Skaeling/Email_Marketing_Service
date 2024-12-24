@@ -1,9 +1,9 @@
-from django.contrib.auth import login
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.contrib.auth.views import PasswordResetView, LoginView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import PermissionDenied
+from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404, redirect
 
 from .forms import CustomUserCreationForm, CustomUpdateForm, ModeratorUpdateForm, CustomLoginForm
@@ -12,6 +12,9 @@ from django.views.generic import ListView, DetailView
 from django.urls import reverse_lazy, reverse
 
 from .models import CustomUser
+
+import secrets
+from config.settings import DEFAULT_FROM_EMAIL
 
 
 class RegisterView(SuccessMessageMixin, CreateView):
@@ -22,9 +25,29 @@ class RegisterView(SuccessMessageMixin, CreateView):
 
     def form_valid(self, form):
         user = form.save()
-        login(self.request, user)
-        messages.success(self.request, "Регистрация прошла успешно!")
-        return redirect(self.success_url)
+        user.is_active = False
+        token = secrets.token_hex(16)
+        user.token = token
+        user.save()
+        host = self.request.get_host()
+        url = f'http://{host}/users/confirm-email/{token}/'
+        send_mail(
+            subject='Подтверждение адреса электронной почты',
+            message=f'Перейдите по ссылке для активации вашего профиля Send-or-Treat {url}',
+            from_email=DEFAULT_FROM_EMAIL,
+            recipient_list=[user.email],
+        )
+        messages.success(self.request,
+                         f"Ваша регистрация прошла успешно. "
+                         f"Ссылка для активации профиля направлена на указанный электронный адрес")
+        return super().form_valid(form)
+
+
+def email_verification(request, token):
+    user = get_object_or_404(CustomUser, token=token)
+    user.is_active = True
+    user.save()
+    return redirect(reverse('users:login'))
 
 
 class CustomLoginView(SuccessMessageMixin, LoginView):
@@ -39,7 +62,8 @@ class CustomLoginView(SuccessMessageMixin, LoginView):
         user = get_object_or_404(CustomUser, email=email)
 
         if not user.is_active:
-            form.add_error(None, 'Ваш аккаунт неактивен. Пожалуйста, свяжитесь с администратором.')
+            form.add_error(None, f'Ваш аккаунт неактивен. Если вы заходите на сайт впервые - '
+                                 f'подтвердите email согласно инструкции на вашей почте')
         return self.render_to_response(self.get_context_data(form=form))
 
 
