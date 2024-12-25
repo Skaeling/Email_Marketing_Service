@@ -1,19 +1,20 @@
-import smtplib
 
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import render, redirect
 from django.utils import timezone
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 from django.views.generic.edit import UpdateView, CreateView, DeleteView
 from django.views.generic import ListView, DetailView
 
-from config.settings import DEFAULT_FROM_EMAIL
 from .models import Recipient, Message, Newsletter, MailingAttempt
 from django.urls import reverse_lazy, reverse
-from django.core.mail import send_mail
 from .forms import RecipientForm, MessageForm, NewsletterForm, MailingAttemptForm, ModeratorNewsletterForm
 from django.contrib.auth.mixins import LoginRequiredMixin
+
+from .services import mail_attempt, UserDataCache
 
 
 def home(request):
@@ -81,6 +82,7 @@ class RecipientUpdateView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
         raise PermissionDenied
 
 
+@method_decorator(cache_page(60 * 5), name='dispatch')
 class RecipientDetailView(LoginRequiredMixin, DetailView):
     model = Recipient
     template_name = 'sender/recipient_detail.html'
@@ -154,6 +156,7 @@ class MessageUpdateView(SuccessMessageMixin, UpdateView):
         raise PermissionDenied
 
 
+@method_decorator(cache_page(60 * 15), name='dispatch')
 class MessageDetailView(DetailView):
     model = Message
     template_name = 'sender/message_detail.html'
@@ -195,8 +198,8 @@ class NewsletterListView(LoginRequiredMixin, ListView):
         context['title'] = 'Список доступных рассылок'
         context['headers'] = ['ID', 'Дата старта', 'Дата завершения', 'Текущий статус', 'Сообщение',
                               'Получатели', 'Опции']
-        context['clients'] = Recipient.objects.filter(creator=self.request.user)
-        context['user_messages'] = Message.objects.filter(author=self.request.user)
+        context['clients'] = UserDataCache.get_user_data(self.request.user, 'clients')
+        context['user_messages'] = UserDataCache.get_user_data(self.request.user, 'messages')
         return context
 
 
@@ -260,6 +263,7 @@ class NewsletterUpdateView(SuccessMessageMixin, UpdateView):
         return super().form_valid(form)
 
 
+@method_decorator(cache_page(60 * 5), name='dispatch')
 class NewsletterDetailView(DetailView):
     model = Newsletter
     template_name = 'sender/newsletter_detail.html'
@@ -303,7 +307,7 @@ class MailingAttemptCreateView(SuccessMessageMixin, LoginRequiredMixin, CreateVi
         if self.request.user.has_perm('sender.can_view_all_newsletters'):
             newsletters = Newsletter.objects.all()
         else:
-            newsletters = Newsletter.objects.filter(owner=self.request.user)
+            newsletters = UserDataCache.get_user_data(self.request.user, 'newsletters')
         context['newsletters'] = newsletters
 
         return context
@@ -329,22 +333,6 @@ class MailingAttemptCreateView(SuccessMessageMixin, LoginRequiredMixin, CreateVi
         return redirect(self.success_url)
 
 
-def mail_attempt(newsletter):
-    to = list(newsletter.recipients.values_list('email', flat=True))
-    if not to:
-        return False, "Нет адресатов для рассылки"
-    sender = DEFAULT_FROM_EMAIL
-    title = newsletter.message.title
-    message = newsletter.message.body
-    try:
-        response = send_mail(title, message, sender, to, fail_silently=False)
-        print("Рассылка отправлена успешно")
-        return True, response
-    except smtplib.SMTPException as e:
-        print(f"Ошибка при отправке письма: {e}")
-        return False, str(e)
-
-
 class MailingAttemptListView(ListView):
     model = MailingAttempt
     template_name = 'sender/mailing_attempts.html'
@@ -358,7 +346,7 @@ class MailingAttemptListView(ListView):
         context = super().get_context_data(**kwargs)
         context['headers'] = ['ID', 'Дата старта', 'Дата завершения', 'Текущий статус', 'Сообщение',
                               'Получатели', 'Опции']
-        newsletters = Newsletter.objects.filter(owner=self.request.user)
+        newsletters = UserDataCache.get_user_data(self.request.user, 'newsletters')
         context['newsletters'] = newsletters
         return context
 

@@ -161,3 +161,12 @@ LOGOUT_REDIRECT_URL = 'sender:home'
 
 APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"  # Default
 APSCHEDULER_TIMEZONE = "Europe/Moscow"  # Default
+
+CACHE_ENABLED = True
+if CACHE_ENABLED:
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+            'LOCATION': os.getenv('LOCATION'),
+        }
+    }
