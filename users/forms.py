@@ -1,7 +1,9 @@
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Fieldset, Submit, Row, Column, HTML
+from crispy_forms.layout import HTML, Column, Fieldset, Layout, Row, Submit
+from django.contrib.auth.forms import (AuthenticationForm, UserChangeForm,
+                                       UserCreationForm)
+
 from .models import CustomUser
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, UserChangeForm
 
 
 class StyleFormMixin:
@@ -14,9 +16,10 @@ class StyleFormMixin:
         self.helper.layout = Layout(
             Fieldset('', *self.fields, css_class='form-control border-primary', style='font-size: 13px;'),
             Row(
-                Column(HTML('<a class="btn btn-outline-primary form-group" href="javascript:history.back()">Назад</a>')),
-                Column(Submit('submit', '{% if object %}Сохранить{% else %}ОК{% endif %}', css_class='btn btn-primary form-group')),
-                css_class='col-12 mt-2 text-center'
+                Column(HTML('<a class="btn btn-outline-primary form-group" '
+                            'href="javascript:history.back()">Назад</a>')),
+                Column(Submit('submit', '{% if object %}Сохранить{% else %}ОК{% endif %}',
+                              css_class='btn btn-primary form-group')), css_class='col-12 mt-2 text-center'
             )
         )
 

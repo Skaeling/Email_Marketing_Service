@@ -1,20 +1,22 @@
+import secrets
+
 from django.contrib import messages
-from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
-from django.contrib.auth.views import PasswordResetView, LoginView
+from django.contrib.auth.mixins import (LoginRequiredMixin,
+                                        PermissionRequiredMixin)
+from django.contrib.auth.views import LoginView, PasswordResetView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import PermissionDenied
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse, reverse_lazy
+from django.views.generic import DetailView, ListView
+from django.views.generic.edit import CreateView, UpdateView
 
-from .forms import CustomUserCreationForm, CustomUpdateForm, ModeratorUpdateForm, CustomLoginForm
-from django.views.generic.edit import UpdateView, CreateView
-from django.views.generic import ListView, DetailView
-from django.urls import reverse_lazy, reverse
-
-from .models import CustomUser
-
-import secrets
 from config.settings import DEFAULT_FROM_EMAIL
+
+from .forms import (CustomLoginForm, CustomUpdateForm, CustomUserCreationForm,
+                    ModeratorUpdateForm)
+from .models import CustomUser
 
 
 class RegisterView(SuccessMessageMixin, CreateView):
@@ -38,8 +40,8 @@ class RegisterView(SuccessMessageMixin, CreateView):
             recipient_list=[user.email],
         )
         messages.success(self.request,
-                         f"Ваша регистрация прошла успешно. "
-                         f"Ссылка для активации профиля направлена на указанный электронный адрес")
+                         "Ваша регистрация прошла успешно."
+                         "Ссылка для активации профиля направлена на указанный электронный адрес")
         return super().form_valid(form)
 
 
@@ -62,8 +64,8 @@ class CustomLoginView(SuccessMessageMixin, LoginView):
         user = get_object_or_404(CustomUser, email=email)
 
         if not user.is_active:
-            form.add_error(None, f'Ваш аккаунт неактивен. Если вы заходите на сайт впервые - '
-                                 f'подтвердите email согласно инструкции на вашей почте')
+            form.add_error(None, 'Ваш аккаунт неактивен. Если вы заходите на сайт впервые - '
+                                 'подтвердите email согласно инструкции на вашей почте')
         return self.render_to_response(self.get_context_data(form=form))
 
 

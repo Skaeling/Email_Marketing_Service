@@ -1,20 +1,19 @@
-
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import PermissionDenied
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect, render
+from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
-from django.views.generic.edit import UpdateView, CreateView, DeleteView
-from django.views.generic import ListView, DetailView
+from django.views.generic import DetailView, ListView
+from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
-from .models import Recipient, Message, Newsletter, MailingAttempt
-from django.urls import reverse_lazy, reverse
-from .forms import RecipientForm, MessageForm, NewsletterForm, MailingAttemptForm, ModeratorNewsletterForm
-from django.contrib.auth.mixins import LoginRequiredMixin
-
-from .services import mail_attempt, UserDataCache
+from .forms import (MailingAttemptForm, MessageForm, ModeratorNewsletterForm,
+                    NewsletterForm, RecipientForm)
+from .models import MailingAttempt, Message, Newsletter, Recipient
+from .services import UserDataCache, mail_attempt
 
 
 def home(request):
@@ -31,7 +30,7 @@ def home(request):
     return render(request, 'sender/home.html', extra_context)
 
 
-                                                                # CLIENT
+# CLIENT
 class RecipientListView(LoginRequiredMixin, ListView):
     model = Recipient
     template_name = 'sender/recipients.html'
@@ -104,8 +103,7 @@ class RecipientDeleteView(LoginRequiredMixin, DeleteView):
         raise PermissionDenied
 
 
-                                                                # MESSAGE
-
+# MESSAGE
 class MessageListView(LoginRequiredMixin, ListView):
     model = Message
     template_name = 'sender/messages.html'
@@ -178,9 +176,7 @@ class MessageDeleteView(LoginRequiredMixin, DeleteView):
         raise PermissionDenied
 
 
-                                                            #  NEWSLETTER
-
-
+#  NEWSLETTER
 class NewsletterListView(LoginRequiredMixin, ListView):
     model = Newsletter
     template_name = 'sender/newsletters.html'
@@ -284,9 +280,8 @@ class NewsletterDeleteView(LoginRequiredMixin, DeleteView):
             return newsletter
         raise PermissionDenied
 
-                                                                # MAILINGATTEMPT
 
-
+# MAILING ATTEMPT
 class MailingAttemptCreateView(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     context_object_name = 'newsletters'
     form_class = MailingAttemptForm

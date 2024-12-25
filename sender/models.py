@@ -8,8 +8,8 @@ class Recipient(models.Model):
     email = models.EmailField(unique=True, verbose_name='Электронная почта')
     fullname = models.CharField(max_length=100, verbose_name='ФИО')
     comment = models.TextField(null=True, blank=True, verbose_name='Комментарий')
-    creator = models.ForeignKey(CustomUser, null=True, blank=True, on_delete=models.SET_NULL, related_name='recipients',
-                                verbose_name="Кем добавлен")
+    creator = models.ForeignKey(CustomUser, null=True, blank=True, on_delete=models.SET_NULL,
+                                related_name='recipients', verbose_name="Кем добавлен")
 
     def get_absolute_url(self):
         return reverse("sender:recipient_detail", kwargs={'pk': self.pk})

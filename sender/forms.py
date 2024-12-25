@@ -1,7 +1,8 @@
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Fieldset, Submit, Row, Column, HTML
+from crispy_forms.layout import HTML, Column, Fieldset, Layout, Row, Submit
 from django import forms
-from .models import Recipient, Message, Newsletter, MailingAttempt
+
+from .models import MailingAttempt, Message, Newsletter, Recipient
 
 
 class CustomCreateForm(forms.ModelForm):
@@ -61,7 +62,6 @@ class NewsletterForm(CustomCreateForm):
             self.fields['message'].queryset = Message.objects.filter(author=self.request.user)
         self.fields['first_sent'].help_text = 'Без указания даты отправка рассылки будет доступна только вручную'
         self.fields['last_sent'].help_text = 'Без указания даты отправка рассылки будет доступна только вручную'
-
 
 
 class ModeratorNewsletterForm(CustomCreateForm):

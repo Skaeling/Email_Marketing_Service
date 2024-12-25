@@ -1,10 +1,10 @@
 import smtplib
-from django.core.cache import cache
 
+from django.core.cache import cache
 from django.core.mail import send_mail
 
 from config.settings import DEFAULT_FROM_EMAIL
-from sender.models import Newsletter, Recipient, Message
+from sender.models import Message, Newsletter, Recipient
 
 
 def mail_attempt(newsletter):
