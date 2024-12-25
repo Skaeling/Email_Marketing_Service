@@ -1,4 +1,3 @@
-import os
 import smtplib
 
 from django.contrib import messages
@@ -8,6 +7,8 @@ from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.views.generic.edit import UpdateView, CreateView, DeleteView
 from django.views.generic import ListView, DetailView
+
+from config.settings import DEFAULT_FROM_EMAIL
 from .models import Recipient, Message, Newsletter, MailingAttempt
 from django.urls import reverse_lazy, reverse
 from django.core.mail import send_mail
@@ -248,6 +249,16 @@ class NewsletterUpdateView(SuccessMessageMixin, UpdateView):
         else:
             raise PermissionDenied
 
+    def form_valid(self, form):
+        if self.get_form_class() == ModeratorNewsletterForm:
+            newsletter = form.save(commit=False)
+            if form.cleaned_data['status'] == 'closed':
+                newsletter.last_sent = timezone.now()
+            newsletter.save()
+            return super().form_valid(form)
+
+        return super().form_valid(form)
+
 
 class NewsletterDetailView(DetailView):
     model = Newsletter
@@ -322,13 +333,12 @@ def mail_attempt(newsletter):
     to = list(newsletter.recipients.values_list('email', flat=True))
     if not to:
         return False, "Нет адресатов для рассылки"
-    sender = os.getenv('EMAIL_DEFAULT_USER')
+    sender = DEFAULT_FROM_EMAIL
     title = newsletter.message.title
     message = newsletter.message.body
     try:
         response = send_mail(title, message, sender, to, fail_silently=False)
         print("Рассылка отправлена успешно")
-        print(response)
         return True, response
     except smtplib.SMTPException as e:
         print(f"Ошибка при отправке письма: {e}")
