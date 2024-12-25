@@ -13,4 +13,4 @@ class Command(BaseCommand):
         Recipient.objects.all().delete()
 
         call_command('loaddata', 'sender_fixture.json')
-        self.stdout.write(self.style.SUCCESS('Successfully loaded data from fixture'))
+        self.stdout.write('Данные из фикстуры успешно загружены')

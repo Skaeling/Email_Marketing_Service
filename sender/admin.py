@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Recipient, Message, Newsletter
+from .models import Recipient, Message, Newsletter, MailingAttempt
 
 
 @admin.register(Recipient)
@@ -14,4 +14,9 @@ class MessageAdmin(admin.ModelAdmin):
 
 @admin.register(Newsletter)
 class NewsletterAdmin(admin.ModelAdmin):
-    list_display = ('first_sent', 'last_sent', 'status')
+    list_display = ('id', 'first_sent', 'last_sent', 'status')
+
+
+@admin.register(MailingAttempt)
+class MailingAttemptAdmin(admin.ModelAdmin):
+    list_display = ('id', 'attempt_date', 'exc_state', 'server_response', 'newsletter')

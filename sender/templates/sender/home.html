@@ -3,7 +3,7 @@
 {% include "sender/includes/inc_sender_header.html" with title=title header='Добро пожаловать в сервис рассылок!'%}
 <div class="row d-flex justify-content-center">
 
-    <div class="col-8 ">
+    <div class="col-10">
         <div class="container rounded bg-secondary" style="high:300vh">
             <div class="row d-flex justify-content-center">
                 {% if user.is_authenticated %}
@@ -69,7 +69,9 @@
                             </h2>
                             <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse show">
                                 <div class="accordion-body">
-                                    Для старта рассылки пройдите регистрацию и выберите соответствующий раздел <strong>Меню</strong>
+                                    Доступ к сервису предоставляется только для авторизованных пользователей.
+                                    Перед созданием своей рассылки пройдите регистрацию в разделе <strong>"Личный
+                                    кабинет"</strong>.
                                 </div>
                             </div>
                         </div>
@@ -83,17 +85,9 @@
                             </h2>
                             <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse">
                                 <div class="accordion-body">
-                                    <strong>This is the third item's accordion body.</strong> It is hidden by default,
-                                    until the
-                                    collapse plugin adds the appropriate classes that we use to style each element.
-                                    These classes
-                                    control the overall appearance, as well as the showing and hiding via CSS
-                                    transitions. You can
-                                    modify any of this with custom CSS or overriding our default variables. It's also
-                                    worth noting
-                                    that just about any HTML can go within the <code>.accordion-body</code>, though the
-                                    transition
-                                    does limit overflow.
+                                    <strong>Группа модераторов</strong> может иметь разные уровни доступа, в зависимости от потребностей вашего бизнеса.
+                                    Эта функция поможет вам эффективно управлять контентом и пользователями сайта, а также повысить качество обслуживания
+                                    клиентов.
                                 </div>
                             </div>
                         </div>

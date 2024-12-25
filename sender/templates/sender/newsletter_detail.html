@@ -25,7 +25,7 @@
         <div class="card-body bg-primary-subtle">
             <h5 class="card-title">Рассылка №{{ newsletter.id }} ({{ newsletter.get_status_display }})</h5>
             <p class="mt-3 card-text text-center">
-            {% if newsletter.status == 'started' %}
+            {% if newsletter.status == 'started' or newsletter.status == 'created'%}
                 Сроки отправки: c {{ newsletter.first_sent }} - {% if not newsletter.last_sent %}без ограничений{% else %}по {{ newsletter.last_sent }}{% endif %}
             {% elif newsletter.status == 'closed'%}
                 Сроки отправки: c {{ newsletter.first_sent }} по {{ newsletter.last_sent }}

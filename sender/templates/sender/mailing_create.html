@@ -18,15 +18,24 @@
             {% include "sender/includes/table.html" with headers=headers items=newsletters actions=actions %}
             {% else %}
             <h4 class="text-center">У вас пока нет ни одной рассылки</h4>
-            <div class="container mt-2 text-center">
-                <a href="{% url 'sender:newsletter_create' %}" class="button btn btn-outline-primary">Добавить новую</a>
-            </div>
+            <p class="text-center">Добавьте необходимые данные в соответствующих разделах</p>
             {% endif %}
         </div>
-
     </div>
 </div>
 
+
+<div class="container mt-2 text-center">
+    {% if perms.sender.can_view_all_newsletters%}
+    <a href="{% url 'sender:home' %}" class="button btn btn-outline-primary">На Главную</a>
+    {% else %}
+        <a href="{% url 'sender:recipient_create' %}" class="button btn btn-outline-primary">Добавить получателя</a>
+        <a href="{% url 'sender:message_create' %}" class="button btn btn-outline-primary">Добавить сообщение</a>
+        <a href="{% url 'sender:newsletter_create' %}" class="button btn btn-outline-primary">Добавить новую рассылку</a>
+
+    {% endif %}
+
+</div>
 
 {% endblock %}
 

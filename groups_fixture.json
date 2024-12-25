@@ -441,6 +441,78 @@
     }
   },
   {
+    "model": "auth.permission",
+    "pk": 50,
+    "fields": {
+      "name": "Can add django job",
+      "content_type": 12,
+      "codename": "add_djangojob"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 51,
+    "fields": {
+      "name": "Can change django job",
+      "content_type": 12,
+      "codename": "change_djangojob"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 52,
+    "fields": {
+      "name": "Can delete django job",
+      "content_type": 12,
+      "codename": "delete_djangojob"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 53,
+    "fields": {
+      "name": "Can view django job",
+      "content_type": 12,
+      "codename": "view_djangojob"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 54,
+    "fields": {
+      "name": "Can add django job execution",
+      "content_type": 13,
+      "codename": "add_djangojobexecution"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 55,
+    "fields": {
+      "name": "Can change django job execution",
+      "content_type": 13,
+      "codename": "change_djangojobexecution"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 56,
+    "fields": {
+      "name": "Can delete django job execution",
+      "content_type": 13,
+      "codename": "delete_djangojobexecution"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 57,
+    "fields": {
+      "name": "Can view django job execution",
+      "content_type": 13,
+      "codename": "view_djangojobexecution"
+    }
+  },
+  {
     "model": "auth.group",
     "pk": 2,
     "fields": {

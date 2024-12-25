@@ -3,36 +3,20 @@
     "model": "sender.recipient",
     "pk": 1,
     "fields": {
-      "email": "JhonDoe@mail.ru",
+      "email": "JhonDoe@testmail.ru",
       "fullname": "Jhon Doe Jerom",
-      "comment": "Engineer"
+      "comment": "Engineer",
+      "creator": null
     }
   },
   {
     "model": "sender.recipient",
     "pk": 2,
     "fields": {
-      "email": "KateKuper@mail.com",
+      "email": "KateKuper@testmail.ru",
       "fullname": "Kate Kuper",
-      "comment": "HR"
-    }
-  },
-  {
-    "model": "sender.recipient",
-    "pk": 3,
-    "fields": {
-      "email": "MarshallMathers@mail.com",
-      "fullname": "Marshall Matters",
-      "comment": "SlimS Company Ltd"
-    }
-  },
-  {
-    "model": "sender.recipient",
-    "pk": 8,
-    "fields": {
-      "email": "Wind@yandex.ru",
-      "fullname": "WV",
-      "comment": ""
+      "comment": "HR",
+      "creator": null
     }
   },
   {
@@ -40,7 +24,8 @@
     "pk": 1,
     "fields": {
       "title": "FirstOne",
-      "body": "BuyBuyBuy"
+      "body": "BuyBuyBuy",
+      "author": null
     }
   },
   {
@@ -48,7 +33,8 @@
     "pk": 2,
     "fields": {
       "title": "SecondOne",
-      "body": "PresentPresentPresent"
+      "body": "PresentPresentPresent",
+      "author": null
     }
   },
   {
@@ -56,17 +42,19 @@
     "pk": 3,
     "fields": {
       "title": "ThirdOne",
-      "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque interdum lacinia bibendum. Fusce quis est nibh. Donec imperdiet volutpat orci, vitae euismod purus. Donec interdum diam non mi consequat, sit amet condimentum lacus eleifend. Nulla facilisi. Morbi congue mi tellus, sagittis tempor nibh dapibus ac. Mauris tempus accumsan risus, quis tempor mi dapibus et. Mauris porttitor elementum posuere. Curabitur euismod non libero et tempus. Sed interdum dui eu semper eleifend. Integer ut mauris lorem. Phasellus eget metus lacinia, volutpat velit eget, porttitor justo. Nullam nec libero et velit suscipit tempor. Integer condimentum eleifend euismod. Vestibulum eleifend elit a diam dictum aliquet."
+      "body": "Hello there!",
+      "author": null
     }
   },
   {
     "model": "sender.newsletter",
-    "pk": 4,
+    "pk": 1,
     "fields": {
-      "first_sent": null,
+      "first_sent": "2024-12-07T00:58:08Z",
       "last_sent": null,
-      "status": "created",
-      "message": 3,
+      "status": "started",
+      "message": 1,
+      "owner": null,
       "recipients": [
         1,
         2
@@ -75,50 +63,36 @@
   },
   {
     "model": "sender.newsletter",
-    "pk": 8,
+    "pk": 2,
     "fields": {
-      "first_sent": null,
-      "last_sent": null,
+      "first_sent": "2024-12-25T15:18:51Z",
+      "last_sent": "2024-12-31T00:15:43Z",
       "status": "created",
-      "message": 1,
+      "message": 3,
+      "owner": null,
       "recipients": [
-        1,
-        2,
-        3
-      ]
-    }
-  },
-  {
-    "model": "sender.newsletter",
-    "pk": 12,
-    "fields": {
-      "first_sent": "2024-12-07T00:58:08.283Z",
-      "last_sent": null,
-      "status": "started",
-      "message": 2,
-      "recipients": [
-        8
+        1
       ]
     }
   },
   {
     "model": "sender.mailingattempt",
-    "pk": 19,
+    "pk": 1,
     "fields": {
-      "attempt_date": "2024-12-07T00:54:20.175Z",
+      "attempt_date": "2024-12-24T10:57:19.643Z",
       "exc_state": "error",
-      "server_response": "error",
-      "newsletter": 12
+      "server_response": "(554, b'5.7.1 Message rejected under suspicion of SPAM; https://ya.cc/1IrBc 1735037839-JvU5tgDOfOs0-3ScJc7vD')",
+      "newsletter": 1
     }
   },
   {
     "model": "sender.mailingattempt",
-    "pk": 20,
+    "pk": 2,
     "fields": {
-      "attempt_date": "2024-12-07T00:58:08.263Z",
+      "attempt_date": "2024-12-25T00:59:15.871Z",
       "exc_state": "success",
-      "server_response": "",
-      "newsletter": 12
+      "server_response": "1",
+      "newsletter": 2
     }
   }
 ]

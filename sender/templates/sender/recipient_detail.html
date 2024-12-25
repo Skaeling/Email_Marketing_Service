@@ -11,12 +11,12 @@
                 </li>
                 {% if user.is_staff or user == client.creator %}
                 <li class="nav-item">
-                    <a class="nav-link link-light text-dark" href="{% url 'sender:recipient_update' recipient.pk %}">Редактировать</a>
+                    <a class="nav-link link-light text-dark" href="{% url 'sender:recipient_update' client.pk %}">Редактировать</a>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link link-danger text-dark"
-                       href="{% url 'sender:recipient_confirm_delete' recipient.pk %}">Удалить</a>
+                       href="{% url 'sender:recipient_confirm_delete' client.pk %}">Удалить</a>
                 </li>
                 {% endif %}
             </ul>
