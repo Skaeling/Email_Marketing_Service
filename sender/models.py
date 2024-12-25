@@ -95,8 +95,8 @@ class MailingAttempt(models.Model):
     newsletter = models.ForeignKey(Newsletter, on_delete=models.CASCADE, related_name='mailing_attempts')
 
     def __str__(self):
-        return f'{self.attempt_date} осуществлена попытка отправки {self.newsletter} ' \
-               f'с результатом: "{self.exc_state}" Лог операции: "{self.server_response}"'
+        return f'Осуществлена попытка отправки "{self.newsletter}" ' \
+               f'с результатом: "{self.exc_state}" Ответ сервера: "{self.server_response}"'
 
     class Meta:
         verbose_name = 'попытка'

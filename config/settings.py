@@ -43,8 +43,10 @@ INSTALLED_APPS = [
 
     'sender',
     'users',
-    "crispy_forms",
-    "crispy_bootstrap5",
+
+    'crispy_forms',
+    'crispy_bootstrap5',
+    'django_apscheduler',
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
@@ -157,3 +159,5 @@ LOGIN_URL = 'users:login'
 LOGIN_REDIRECT_URL = 'sender:home'
 LOGOUT_REDIRECT_URL = 'sender:home'
 
+APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"  # Default
+APSCHEDULER_TIMEZONE = "Europe/Moscow"  # Default
