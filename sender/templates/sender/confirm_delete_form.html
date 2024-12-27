@@ -1,0 +1,18 @@
+{% extends 'sender/base.html' %}
+{% block content %}
+{% include "sender/includes/inc_sender_header.html" with title=title header='Внимание! Это действие будет иметь последствия!'%}
+
+<div class="col-12">
+    <div class="row mt-5 text-center">
+        <h5>Вы действительно ходите удалить: <strong>{{ object }}</strong>?</h5>
+        <div class="col-12 mt-3">
+            <form method="post">
+                {% csrf_token %}
+                <a href="javascript:history.back()" class="btn btn-outline-primary">Отменить</a>
+                <button type="submit" class="btn btn-outline-danger">Подтвердить</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

@@ -1,86 +1,100 @@
 {% extends 'sender/base.html' %}
 {% block content%}
-{% include "sender/includes/inc_sender_header.html" with title=title header='Добро пожаловать в сервис рассылок'%}
+{% include "sender/includes/inc_sender_header.html" with title=title header='Добро пожаловать в сервис рассылок!'%}
+<div class="row d-flex justify-content-center">
 
-<div class="row">
-    <div class="col-12 mt-3 d-flex justify-content-center">
-        <table class="table-primary table-bordered">
-            <thead>
-            <tr class="table-primary text-center">
-                <th scope="col">&nbsp;Всего рассылок&nbsp;</th>
-                <th scope="col">&nbsp;Активных&nbsp;</th>
-                <th scope="col">&nbsp;Количество уникальных получателей&nbsp;</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr class="table-primary text-center">
-                <th scope="row">&nbsp;{{ all_mailings }}&nbsp;</th>
-                <td class="table-primary">&nbsp;{{ active_mail }}&nbsp;</td>
-                <td class="table-primary">&nbsp;{{ email.count }}&nbsp;</td>
-
-            </tr>
-        </table>
-    </div>
-</div>
-<div class="row mt-5 d-flex justify-content-center">
-    <div class="col-6">
-        <div class="accordion" id="accordionPanelsStayOpenExample">
-            <div class="accordion-item">
-                <h2 class="accordion-header">
-                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true"
-                            aria-controls="panelsStayOpen-collapseOne">
-                        Справочная информация
-                    </button>
-                </h2>
-                <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show">
-                    <div class="accordion-body">
-                        Для создания нового объекта выберите соответствующий раздел <strong>Меню</strong>
+    <div class="col-10">
+        <div class="container rounded bg-secondary" style="high:300vh">
+            <div class="row d-flex justify-content-center">
+                {% if user.is_authenticated %}
+                <div class="col-10 mt-3">
+                    <div class="container p-2 rounded bg-dark">
+                        <table class="table table-border text-center mt-3">
+                            <thead>
+                            <tr class="table-secondary">
+                                <th scope="col">Всего рассылок</th>
+                                <th scope="col">Активных</th>
+                                <th scope="col">Количество уникальных получателей</th>
+                            </tr>
+                            </thead>
+                            <tbody class="table-group-divider">
+                            <tr>
+                                <th>{{ all_mailings }}</th>
+                                <td>{{ active_mail }}</td>
+                                <td>{{ email.count }}</td>
+                            </tr>
+                        </table>
                     </div>
                 </div>
+                {% endif %}
             </div>
-            <div class="accordion-item">
-                <h2 class="accordion-header">
-                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false"
-                            aria-controls="panelsStayOpen-collapseTwo">
-                        Accordion Item #2
-                    </button>
-                </h2>
-                <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse show">
-                    <div class="accordion-body">
-                        <strong>This is the second item's accordion body.</strong> It is hidden by default, until the
-                        collapse plugin adds the appropriate classes that we use to style each element. These classes
-                        control the overall appearance, as well as the showing and hiding via CSS transitions. You can
-                        modify any of this with custom CSS or overriding our default variables. It's also worth noting
-                        that just about any HTML can go within the <code>.accordion-body</code>, though the transition
-                        does limit overflow.
-                    </div>
-                </div>
-            </div>
-            <div class="accordion-item">
-                <h2 class="accordion-header">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false"
-                            aria-controls="panelsStayOpen-collapseThree">
-                        Accordion Item #3
-                    </button>
-                </h2>
-                <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse">
-                    <div class="accordion-body">
-                        <strong>This is the third item's accordion body.</strong> It is hidden by default, until the
-                        collapse plugin adds the appropriate classes that we use to style each element. These classes
-                        control the overall appearance, as well as the showing and hiding via CSS transitions. You can
-                        modify any of this with custom CSS or overriding our default variables. It's also worth noting
-                        that just about any HTML can go within the <code>.accordion-body</code>, though the transition
-                        does limit overflow.
+
+            <div class="row mt-5 d-flex justify-content-center">
+                <div class="col-10">
+                    <div class="accordion mb-3 mt-3" id="accordionPanelsStayOpenExample">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true"
+                                        aria-controls="panelsStayOpen-collapseOne">
+                                    Общая информация
+                                </button>
+                            </h2>
+                            <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show">
+                                <div class="accordion-body">
+                                    <p>Сервис <strong>Send-Or-Treat</strong> предоставляет вам следующие возможности:
+                                    </p>
+                                    <ul>
+                                        <li>Создание и управление рассылками, хранение клиентской базы (добавление,
+                                            редактирование, удаление получателей)
+                                        </li>
+                                        <li>Отправка рассылок вручную или по заданному расписанию.</li>
+                                        <li>Просмотр статистики отправки рассылок (количество отправленных сообщений,
+                                            уникальных получателей, результаты операций)
+                                        </li>
+                                        <li>Настройка параметров сайта (шаблоны сообщений, стили оформления, параметры
+                                            аутентификации и авторизации пользователей)
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false"
+                                        aria-controls="panelsStayOpen-collapseTwo">
+                                    Начало работы
+                                </button>
+                            </h2>
+                            <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse show">
+                                <div class="accordion-body">
+                                    Доступ к сервису предоставляется только для авторизованных пользователей.
+                                    Перед созданием своей рассылки пройдите регистрацию в разделе <strong>"Личный
+                                    кабинет"</strong>.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false"
+                                        aria-controls="panelsStayOpen-collapseThree">
+                                    Модерация
+                                </button>
+                            </h2>
+                            <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse">
+                                <div class="accordion-body">
+                                    <strong>Группа модераторов</strong> может иметь разные уровни доступа, в зависимости от потребностей вашего бизнеса.
+                                    Эта функция поможет вам эффективно управлять контентом и пользователями сайта, а также повысить качество обслуживания
+                                    клиентов.
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-
-
 {% endblock %}

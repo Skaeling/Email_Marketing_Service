@@ -1,0 +1,129 @@
+{% load static %}
+<table class="table table-border text-center">
+    <thead>
+    <tr class="table-secondary">
+        {% for header in headers %}
+        <th scope="col">{{ header }}</th>
+        {% endfor %}
+    </tr>
+    </thead>
+    <tbody class="table-group-divider">
+
+
+    <!--КЛИЕНТЫ-->
+    {% if recipients %}
+    {% for recipient in recipients %}
+    <tr>
+        <td>{{ recipient.email }}</td>
+        <td>{{ recipient.fullname }}</td>
+        <td>{{ recipient.id }}</td>
+        <td>
+            {% if user.is_staff or user == recipient.creator %}
+            <a href="{% url 'sender:recipient_detail' recipient.pk %}"
+               class="button btn btn-outline-primary"> <img src="{% static 'img/detail.svg' %}" alt="look icon">
+            </a>
+            <a href="{% url 'sender:recipient_update' recipient.pk %}" class="button btn btn-outline-primary">
+                <img src="{% static 'img/update.svg' %}" alt="Pencil icon">
+            </a>
+            <a href="{% url 'sender:recipient_confirm_delete' recipient.pk %}"
+               class="button btn btn-outline-danger">
+                <img src="{% static 'img/delete.svg' %}" alt="Trash icon">
+            </a>
+            {% else %}
+            <a href="{% url 'sender:recipient_detail' recipient.id %}" class="button btn btn-outline-primary">
+                <img src="{% static 'img/detail.svg' %}" alt="look icon">
+
+            </a>
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+    {% endif %}
+    <!--КЛИЕНТЫ-->
+
+
+    <!--СООБЩЕНИЯ-->
+    {% if messages_list %}
+    {% for message in messages_list %}
+    <tr>
+        <td>{{ message.title }}</td>
+        <td>{{ message.body|truncatechars:50 }}</td>
+        <td>{{ message.id }}</td>
+        <td>
+            {% if user.is_staff or user == message.author %}
+            <a href="{% url 'sender:message_detail' message.pk %}"
+               class="button btn btn-outline-primary"> <img src="{% static 'img/detail.svg' %}" alt="look icon">
+            </a>
+            <a href="{% url 'sender:message_update' message.pk %}" class="button btn btn-outline-primary">
+                <img src="{% static 'img/update.svg' %}" alt="Pencil icon">
+            </a>
+            <a href="{% url 'sender:message_confirm_delete' message.pk %}"
+               class="button btn btn-outline-danger">
+                <img src="{% static 'img/delete.svg' %}" alt="Trash icon">
+            </a>
+            {% else %}
+            <a href="{% url 'sender:message_detail' message.id %}" class="button btn btn-outline-primary">
+                <img src="{% static 'img/detail.svg' %}" alt="look icon">
+
+            </a>
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+    {% endif %}
+    <!--СООБЩЕНИЯ-->
+
+
+    <!--РАССЫЛКИ-->
+
+    {% if newsletters %}
+    {% for newsletter in newsletters %}
+    <tr>
+        <td>{{ newsletter.id }}</td>
+        <td>{% if not newsletter.first_sent %}Нет{% else %}{{ newsletter.first_sent }}{% endif %}</td>
+        <td>{% if not newsletter.last_sent %}Нет{% else %}{{ newsletter.last_sent }}{% endif %}</td>
+        <td>{{ newsletter.get_status_display }}</td>
+        <td>{{ newsletter.message|truncatechars:30 }}</td>
+        <td class="text-start">
+            <ul>
+                {% for r in newsletter.recipients.all %}
+                <li>{{ r }}</li>
+                {% endfor %}
+            </ul>
+        </td>
+        <td>
+            <div class="col-1 d-flex justify-content-between gap-1">
+            {% if user.is_staff or user == newsletter.owner %}
+                <a href="{% url 'sender:newsletter_detail' newsletter.pk %}"
+                   class="button btn btn-outline-primary"> <img src="{% static 'img/detail.svg' %}" alt="look icon">
+                </a>
+                <a href="{% url 'sender:newsletter_update' newsletter.pk %}" class="button btn btn-outline-primary">
+                    <img src="{% static 'img/update.svg' %}" alt="Pencil icon">
+                </a>
+                <a href="{% url 'sender:newsletter_confirm_delete' newsletter.pk %}"
+                   class="button btn btn-outline-danger">
+                    <img src="{% static 'img/delete.svg' %}" alt="Trash icon">
+                </a>
+                {% else %}
+                <a href="{% url 'sender:newsletter_detail' newsletter.id %}" class="button btn btn-outline-primary">
+                    <img src="{% static 'img/detail.svg' %}" alt="look icon">
+                </a>
+            {% endif %}
+
+                <!--  Форма блокировки рассылки -->
+            {% if newsletter.status == 'started' and perms.sender.can_change_newsletter_status %}
+                <form method="post" action="{% url 'sender:newsletter_update' newsletter.pk %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="status" value="closed">
+                    <button type="submit" class="btn btn-outline-danger">
+                        Завершить
+                    </button>
+                </form>
+            {% endif %}
+    </div>
+        </td>
+    </tr>
+    {% endfor %}
+    {% endif %}
+    </tbody>
+</table>

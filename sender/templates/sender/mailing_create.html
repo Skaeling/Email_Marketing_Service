@@ -1,0 +1,41 @@
+{% extends 'sender/base.html' %}
+{% load crispy_forms_tags %}
+{% block content%}
+{% include "sender/includes/inc_sender_header.html" with title=title header='Выберите рассылку для отправки'%}
+
+{% if newsletters %}
+<div class="container d-flex justify-content-center">
+    <div class="col-10 mt-3">
+        {% crispy form %}
+    </div>
+</div>
+{% endif %}
+
+<div class="row">
+    <div class="col-12 mt-2">
+        <div class="container p-5 mt-2 rounded bg-primary-subtle">
+            {% if newsletters %}
+            {% include "sender/includes/table.html" with headers=headers items=newsletters actions=actions %}
+            {% else %}
+            <h4 class="text-center">У вас пока нет ни одной рассылки</h4>
+            <p class="text-center">Добавьте необходимые данные в соответствующих разделах</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+
+<div class="container mt-2 text-center">
+    {% if perms.sender.can_view_all_newsletters%}
+    <a href="{% url 'sender:home' %}" class="button btn btn-outline-primary">На Главную</a>
+    {% else %}
+        <a href="{% url 'sender:recipient_create' %}" class="button btn btn-outline-primary">Добавить получателя</a>
+        <a href="{% url 'sender:message_create' %}" class="button btn btn-outline-primary">Добавить сообщение</a>
+        <a href="{% url 'sender:newsletter_create' %}" class="button btn btn-outline-primary">Добавить новую рассылку</a>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}
+

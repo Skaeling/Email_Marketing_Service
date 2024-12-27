@@ -2,38 +2,42 @@
 {% block content%}
 {% include "sender/includes/inc_sender_header.html" with title=title header=client.fullname%}
 
+<div class="col-12 text-center">
+    <div class="mt-3 card text-center">
+        <div class="card-header bg-secondary">
+            <ul class="nav nav-pills card-header-pills">
+                <li class="nav-item">
+                    <a class="nav-link active bg-primary-subtle text-dark" href="#">Основные данные</a>
+                </li>
+                {% if user.is_staff or user == client.creator %}
+                <li class="nav-item">
+                    <a class="nav-link link-light text-dark" href="{% url 'sender:recipient_update' client.pk %}">Редактировать</a>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link link-danger text-dark"
+                       href="{% url 'sender:recipient_confirm_delete' client.pk %}">Удалить</a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
 
-<div class="coll-12 d-flex justify-content-center">
-
-    <table class="table-primary table-bordered">
-        <thead>
-        <tr class="table-primary text-center">
-            <th scope="col">#</th>
-            <th scope="col">Электронная почта</th>
-            <th scope="col">ФИО</th>
-            <th scope="col">&nbsp;Дополнительно&nbsp;</th>
-            <th scope="col">&nbsp;Опции&nbsp;</th>
-
-        </tr>
-        </thead>
-        <tbody>
-        <tr class="table-primary">
-            <th scope="row">&nbsp;{{ client.id }}&nbsp;</th>
-            <td class="table-primary">&nbsp;{{ client.email }}&nbsp;</td>
-            <td class="table-primary">&nbsp;{{ client.fullname }}&nbsp;</td>
-            <td class="table-primary">&nbsp;{{ client.comment }}&nbsp;</td>
-            <td class="table-primary">&nbsp;
-                <a href="{% url 'sender:recipient_update' client.pk %}" class="button btn btn-primary">Редактировать</a>
-                <a href="{% url 'sender:recipient_confirm_delete' client.pk %}" class="button btn btn-danger">Удалить</a>&nbsp;
-            </td>
-
-        </tr>
-    </table>
-</div>
-<div class="container mt-5 text-center">
-                <a href="{% url 'sender:recipients_list' %}" class="button btn btn-primary">К списку получателей</a>
-                <a href="{% url 'sender:recipient_create' %}" class="button btn btn-primary">Добавить нового получателя</a>
-
+        <div class="card-body bg-primary-subtle">
+            <h5 class="card-title">Клиент №{{ client.id }} - {{ client.fullname }}</h5>
+            <p class="mt-3 card-text text-center">{{ client.email }}</p>
+            <p class="mt-3 card-text text-start">{{ client.comment }}</p>
+            <p class="mt-3 card-text text-end">Добавлен: {{ client.creator }}</p>
+        </div>
     </div>
+</div>
+
+<div class="container mt-5 text-center">
+    {% if perms.sender.can_view_all_messages%}
+    <a href="{% url 'sender:recipients_list' %}" class="button btn btn-outline-primary">К списку получателей</a>
+    {% else %}
+    <a href="{% url 'sender:recipients_list' %}" class="button btn btn-outline-primary">К списку получателей</a>
+    <a href="{% url 'sender:recipient_create' %}" class="button btn btn-outline-primary">Добавить нового получателя</a>
+    {% endif %}
+</div>
 
 {% endblock %}

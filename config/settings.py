@@ -42,7 +42,16 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'sender',
+    'users',
+
+    'crispy_forms',
+    'crispy_bootstrap5',
+    'django_apscheduler',
 ]
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+
+CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -144,3 +153,20 @@ EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 EMAIL_PORT = os.getenv('EMAIL_PORT')
 EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL')
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+AUTH_USER_MODEL = 'users.CustomUser'
+LOGIN_URL = 'users:login'
+LOGIN_REDIRECT_URL = 'sender:home'
+LOGOUT_REDIRECT_URL = 'sender:home'
+
+APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"  # Default
+APSCHEDULER_TIMEZONE = "Europe/Moscow"  # Default
+
+CACHE_ENABLED = True
+if CACHE_ENABLED:
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+            'LOCATION': os.getenv('LOCATION'),
+        }
+    }
