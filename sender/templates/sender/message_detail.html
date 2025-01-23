@@ -1,0 +1,40 @@
+{% extends 'sender/base.html' %}
+{% block content%}
+{% include "sender/includes/inc_sender_header.html" with title=title header=message.id %}
+<div class="col-12 text-center">
+    <div class="mt-3 card text-center">
+        <div class="card-header bg-secondary">
+            <ul class="nav nav-pills card-header-pills">
+                <li class="nav-item">
+                    <a class="nav-link active bg-primary-subtle text-dark" href="#">Основные данные</a>
+                </li>
+                {% if user.is_staff or user == message.author %}
+                <li class="nav-item">
+                    <a class="nav-link link-light text-dark" href="{% url 'sender:message_update' message.pk %}">Редактировать</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link link-danger text-dark"
+                       href="{% url 'sender:message_confirm_delete' message.pk %}">Удалить</a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+
+        <div class="card-body bg-primary-subtle">
+            <h5 class="card-title">{{ message.title }}</h5>
+            <p class="mt-3 card-text text-start">{{ message.body }}</p>
+            <p class="mt-3 card-text text-end">Автор: {{ message.author }}</p>
+        </div>
+    </div>
+</div>
+
+<div class="container mt-5 text-center">
+    {% if perms.sender.can_view_all_messages%}
+    <a href="{% url 'sender:messages_list' %}" class="button btn btn-outline-primary">К списку сообщений</a>
+    {% else %}
+    <a href="{% url 'sender:messages_list' %}" class="button btn btn-outline-primary">К списку сообщений</a>
+    <a href="{% url 'sender:message_create' %}" class="button btn btn-outline-primary">Добавить новое сообщение</a>
+    {% endif %}
+</div>
+
+{% endblock %}

@@ -1,0 +1,98 @@
+[
+  {
+    "model": "sender.recipient",
+    "pk": 1,
+    "fields": {
+      "email": "JhonDoe@testmail.ru",
+      "fullname": "Jhon Doe Jerom",
+      "comment": "Engineer",
+      "creator": null
+    }
+  },
+  {
+    "model": "sender.recipient",
+    "pk": 2,
+    "fields": {
+      "email": "KateKuper@testmail.ru",
+      "fullname": "Kate Kuper",
+      "comment": "HR",
+      "creator": null
+    }
+  },
+  {
+    "model": "sender.message",
+    "pk": 1,
+    "fields": {
+      "title": "FirstOne",
+      "body": "BuyBuyBuy",
+      "author": null
+    }
+  },
+  {
+    "model": "sender.message",
+    "pk": 2,
+    "fields": {
+      "title": "SecondOne",
+      "body": "PresentPresentPresent",
+      "author": null
+    }
+  },
+  {
+    "model": "sender.message",
+    "pk": 3,
+    "fields": {
+      "title": "ThirdOne",
+      "body": "Hello there!",
+      "author": null
+    }
+  },
+  {
+    "model": "sender.newsletter",
+    "pk": 1,
+    "fields": {
+      "first_sent": "2024-12-07T00:58:08Z",
+      "last_sent": null,
+      "status": "started",
+      "message": 1,
+      "owner": null,
+      "recipients": [
+        1,
+        2
+      ]
+    }
+  },
+  {
+    "model": "sender.newsletter",
+    "pk": 2,
+    "fields": {
+      "first_sent": "2024-12-25T15:18:51Z",
+      "last_sent": "2024-12-31T00:15:43Z",
+      "status": "created",
+      "message": 3,
+      "owner": null,
+      "recipients": [
+        1
+      ]
+    }
+  },
+  {
+    "model": "sender.mailingattempt",
+    "pk": 1,
+    "fields": {
+      "attempt_date": "2024-12-24T10:57:19.643Z",
+      "exc_state": "error",
+      "server_response": "(554, b'5.7.1 Message rejected under suspicion of SPAM; https://ya.cc/1IrBc 1735037839-JvU5tgDOfOs0-3ScJc7vD')",
+      "newsletter": 1
+    }
+  },
+  {
+    "model": "sender.mailingattempt",
+    "pk": 2,
+    "fields": {
+      "attempt_date": "2024-12-25T00:59:15.871Z",
+      "exc_state": "success",
+      "server_response": "1",
+      "newsletter": 2
+    }
+  }
+]

@@ -1,0 +1,121 @@
+{% load static %}
+<div class="bg-black">
+    <nav class="navbar navbar-expand-lg bg-primary-subtle">
+        <div class="container-fluid">
+            <img src="{% static 'img/logo.svg' %}" alt="login-check icon">
+            <a class="navbar-brand" href="{% url 'sender:home' %}"> Send-Or-Treat</a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="{% url 'sender:home' %}"><strong>Главная</strong></a>
+                    </li>
+                    {% if user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                           aria-expanded="false">
+                            Получатели
+                        </a>
+                        <ul class="dropdown-menu bg-primary-subtle">
+                            <li><a class="dropdown-item" href="{% url 'sender:recipients_list' %}">{% if perms.sender.can_view_all_newsletters %}Все{% else %}Мои{% endif %} получатели</a>
+                            </li>
+                            <li><a class="dropdown-item" href="{% url 'sender:recipient_create' %}">Создать нового
+                                получателя</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                           aria-expanded="false">
+                            Сообщения
+                        </a>
+                        <ul class="dropdown-menu bg-primary-subtle">
+                            <li><a class="dropdown-item" href="{% url 'sender:messages_list' %}">{% if perms.sender.can_view_all_newsletters %}Все{% else %}Мои{% endif %} сообщения</a></li>
+                            <li><a class="dropdown-item" href="{% url 'sender:message_create' %}">Создать новое
+                                сообщение</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                           aria-expanded="false">
+                            Рассылки
+                        </a>
+                        <ul class="dropdown-menu bg-primary-subtle">
+                            <li><a class="dropdown-item" href="{% url 'sender:newsletters_list' %}">{% if perms.sender.can_view_all_newsletters %}Все{% else %}Мои{% endif %} рассылки</a>
+                            </li>
+                            <li><a class="dropdown-item" href="{% url 'sender:newsletter_create' %}">Создать новую
+                                рассылку</a></li>
+                        </ul>
+                    </li>
+                    {% endif %}
+
+
+                </ul>
+                <!--Кнопки -->
+                <div class="container-xs text-center">
+                {% if user.is_authenticated %}
+                {% if perms.users.can_view_all_users %}
+                <a href="{% url 'users:user_list' %}" class="btn btn-outline-primary">
+                    Пользователи</a>
+                {% endif %}
+                    <a href="{% url 'sender:send_mail' %}" class="btn btn-outline-primary">
+                            <strong>Запустить рассылку</strong></a>
+                {% endif %}
+
+                <button class="btn btn-outline-primary" type="button" data-bs-toggle="offcanvas"
+                        data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
+                    {% if user.is_authenticated %}
+                    Профиль
+                    {% else %}
+                    Личный кабинет
+                    {% endif %}
+                </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+</div>
+
+<!--Меню ЛК-->
+<div class="offcanvas offcanvas-end bg-dark text-white" tabindex="-1" id="offcanvasExample"
+     aria-labelledby="offcanvasExampleLabel">
+    <div class="offcanvas-header bg-primary-subtle rounded text-dark">
+        <h5 class="offcanvas-title" id="offcanvasExampleLabel">{% if user.is_authenticated %}Вы зашли как "{{ user.username }}"{% else %}
+        <img src="{% static 'img/authorisation.svg' %}" alt="login-check icon">Требуется авторизация{% endif %}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <div>{% if user.is_authenticated %}
+            {% else %}
+            Войдите в личный кабинет для управления вашими рассылками.
+            {% endif %}
+        </div>
+        <div class="list-group rounded mt-2">
+            {% if user.is_authenticated %}
+            <a href="{% url 'users:user_detail' user.pk %}" class="list-group-item list-group-item-action bg-primary-subtle">Профиль</a>
+            <a href="{% url 'sender:mailing_attempts' %}" class="list-group-item list-group-item-action bg-primary-subtle">Статистика</a>
+        </div>
+    </div>
+    <div class="offcanvas-body d-flex align-items-end justify-content-center">
+        <form method="post" action="{% url 'users:logout' %}">{% csrf_token %}
+            <button type="submit" class="btn btn-lg btn-outline-danger"><img src="{% static 'img/arrow_exit.svg' %}" alt="exit icon">
+                Выход</button>
+        </form>
+    </div>
+    {% else %}
+    <a href="{% url 'users:login' %}" class="list-group-item list-group-item-action bg-primary-subtle">Вход
+        <img src="{% static 'img/entrance.svg' %}" alt="entrance icon">
+    </a>
+    <a href="{% url 'users:register' %}"
+       class="list-group-item list-group-item-action bg-primary-subtle">Регистрация
+        <img src="{% static 'img/registration.svg' %}" alt="menu-check icon">
+    </a>
+    {% endif %}
+</div>
+</div>
+</div>
